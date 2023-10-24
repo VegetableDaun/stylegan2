@@ -179,6 +179,7 @@ class StyleGan2(tf.keras.Model):
         fake_labels = -tf.ones(batch_size)
 
         noise = tf.random.normal(shape=(batch_size, 512))
+
         # generator
         with tf.GradientTape() as g_tape:
             fake_images = self.generator(noise)
@@ -194,6 +195,7 @@ class StyleGan2(tf.keras.Model):
         with tf.GradientTape() as gradient_tape, tf.GradientTape() as total_tape:
             # forward pass
             pred_fake = self.discriminator(fake_images)
+            real_images = tf.transpose(real_images, [0, 2, 3, 1])
             pred_real = self.discriminator(real_images)
 
             epsilon = tf.random.uniform((batch_size, 1, 1, 1))
@@ -208,9 +210,7 @@ class StyleGan2(tf.keras.Model):
 
             # gradient penalty
             gradients_fake = gradient_tape.gradient(loss_fake_grad, [interpolates])
-            gradient_penalty = self.loss_weights[
-                "gradient_penalty"
-            ] * self.gradient_loss(gradients_fake)
+            gradient_penalty = self.loss_weights["gradient_penalty"] * self.gradient_loss(gradients_fake)
 
             # drift loss
             all_pred = tf.concat([pred_fake, pred_real], axis=0)
@@ -228,6 +228,7 @@ class StyleGan2(tf.keras.Model):
         # Update metrics
         self.d_loss_metric.update_state(d_loss)
         self.g_loss_metric.update_state(g_loss)
+
         return {
             "d_loss": self.d_loss_metric.result(),
             "g_loss": self.g_loss_metric.result(),
