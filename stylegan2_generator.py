@@ -164,6 +164,7 @@ class StyleGan2Generator(tf.keras.layers.Layer):
         """
         dlatents = self.mapping_network(z)
         img = self.synthesis_network(dlatents)
+        img = tf.transpose(img, [0, 3, 1, 2])
 
         return img
     
