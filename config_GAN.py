@@ -24,7 +24,7 @@ count_valid = 1164
 add_labels = {0: 0, 1: 0, 2: 0}
 
 # Setting for GAN models
-batch_size = 64
+batch_size = 32
 num_channels = 3
 num_classes = 10
 image_size = 32
