@@ -178,7 +178,7 @@ class StyleGan2(tf.keras.Model):
         real_labels = tf.ones(batch_size)
         fake_labels = -tf.ones(batch_size)
 
-        noise = tf.random.normal(shape=(batch_size, 512))
+        noise = tf.random.normal(shape=(batch_size, self.latent_dim))
 
         # generator
         with tf.GradientTape() as g_tape:
