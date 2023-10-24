@@ -171,7 +171,9 @@ class StyleGan2(tf.keras.Model):
         loss = tf.reduce_mean(tf.square(loss - 1))
         return loss
 
-    def train_step(self, real_images):
+    def train_step(self, data):
+        real_images, one_hot_labels = data
+
         batch_size = tf.shape(real_images)[0]
         real_labels = tf.ones(batch_size)
         fake_labels = -tf.ones(batch_size)
