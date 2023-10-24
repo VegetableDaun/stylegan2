@@ -5,7 +5,7 @@ from stylegan2_discriminator import StyleGan2Discriminator
 from stylegan2_generator import StyleGan2Generator
 
 num_classes = 10
-
+latent_dim = 502
 
 class StyleGan2(tf.keras.Model):
     """ 
@@ -34,6 +34,7 @@ class StyleGan2(tf.keras.Model):
         self.loss_fn = None
         self.g_optimizer = None
         self.d_optimizer = None
+        self.latent_dim = latent_dim
 
         self.gen_loss_tracker = keras.metrics.Mean(name="generator_loss")
         self.disc_loss_tracker = keras.metrics.Mean(name="discriminator_loss")
