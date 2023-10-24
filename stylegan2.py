@@ -1,4 +1,5 @@
 import tensorflow as tf
+import keras
 
 from stylegan2_discriminator import StyleGan2Discriminator
 from stylegan2_generator import StyleGan2Generator
@@ -33,6 +34,9 @@ class StyleGan2(tf.keras.Model):
         self.loss_fn = None
         self.g_optimizer = None
         self.d_optimizer = None
+
+        self.gen_loss_tracker = keras.metrics.Mean(name="generator_loss")
+        self.disc_loss_tracker = keras.metrics.Mean(name="discriminator_loss")
 
         self.resolution = resolution
         if weights is not None:
