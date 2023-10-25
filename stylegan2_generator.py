@@ -147,7 +147,7 @@ class StyleGan2Generator(tf.keras.layers.Layer):
         # load weights
         if weights is not None:
             #we run the network to define it, not the most efficient thing to do...
-            _ = self(tf.zeros(shape=(1, 512)))
+            _ = self(tf.zeros(shape=(1, 256)))
             self.__load_weights(weights)
         
     def call(self, z):
