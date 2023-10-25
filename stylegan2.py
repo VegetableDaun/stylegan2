@@ -174,6 +174,7 @@ class StyleGan2(tf.keras.Model):
     @tf.function
     def train_step(self, data):
         real_images, one_hot_labels = data
+        real_images = tf.transpose(real_images, [0, 3, 1, 2])
 
         batch_size = tf.shape(real_images)[0]
         real_labels = tf.ones(batch_size)
@@ -197,7 +198,6 @@ class StyleGan2(tf.keras.Model):
         with tf.GradientTape() as gradient_tape, tf.GradientTape() as total_tape:
             # forward pass
             pred_fake = self.discriminator(fake_images)
-            real_images = tf.transpose(real_images, [0, 2, 3, 1])
             pred_real = self.discriminator(real_images)
 
             epsilon = tf.random.uniform((batch_size, 1, 1, 1))
