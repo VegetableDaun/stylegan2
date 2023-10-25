@@ -12,8 +12,8 @@ class MinibatchStdLayer(tf.keras.layers.Layer):
         self.num_new_features = num_new_features
         
     def call(self, x):
-        
-        group_size = tf.minimum(self.group_size, x.shape[0])     # Minibatch must be divisible by (or smaller than) group_size.
+        group_size = self.group_size
+        # group_size = tf.minimum(self.group_size, x.shape[0])     # Minibatch must be divisible by (or smaller than) group_size.
         s = x.shape                                             # [NCHW]  Input shape.
         y = tf.reshape(x, [group_size, -1, self.num_new_features, s[1]//self.num_new_features, s[2], s[3]])   # [GMncHW] Split minibatch into M groups of size G. Split channels into n channel groups c.
         y = tf.cast(y, tf.float32)                              # [GMncHW] Cast to FP32.
