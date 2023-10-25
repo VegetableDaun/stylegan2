@@ -16,7 +16,7 @@ class MappingNetwork(tf.keras.layers.Layer):
         
         super(MappingNetwork, self).__init__(**kwargs)
         
-        self.dlatent_size = 512
+        self.dlatent_size = 256
         self.dlatent_vector = (int(np.log2(resolution))-1)*2
         self.mapping_layers = 8
         self.lrmul = 0.01
@@ -25,7 +25,7 @@ class MappingNetwork(tf.keras.layers.Layer):
 
         self.weights_dict = {}
         for i in range(self.mapping_layers):
-            setattr(self, 'Dense{}'.format(i), DenseLayer(fmaps=512, lrmul=self.lrmul, name='Dense{}'.format(i)))
+            setattr(self, 'Dense{}'.format(i), DenseLayer(fmaps=256, lrmul=self.lrmul, name='Dense{}'.format(i)))
     
         self.g_mapping_broadcast = tf.keras.layers.RepeatVector(self.dlatent_vector)
             

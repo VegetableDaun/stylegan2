@@ -28,7 +28,7 @@ batch_size = 32
 num_channels = 3
 num_classes = 0
 image_size = 32
-latent_dim = 512
+latent_dim = 256
 
 generator_in_channels = latent_dim + num_classes
 discriminator_in_channels = num_channels + num_classes
