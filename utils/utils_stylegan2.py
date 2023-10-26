@@ -33,6 +33,6 @@ def convert_images_to_uint8(images, drange=[-1, 1], nchw_to_nhwc=False, shrink=1
         images = tf.saturate_cast(images, tf.uint8)
     return images
 
-def nf(stage, fmap_base=1 << 9, fmap_decay=1.0, fmap_min=1, fmap_max=512):
+def nf(stage, fmap_base=1 << 8, fmap_decay=1.0, fmap_min=1, fmap_max=512):
     return np.clip(int(fmap_base / (2.0 ** (stage * fmap_decay))), fmap_min, fmap_max)
     

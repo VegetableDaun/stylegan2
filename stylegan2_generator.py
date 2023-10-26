@@ -16,7 +16,7 @@ class MappingNetwork(tf.keras.layers.Layer):
         
         super(MappingNetwork, self).__init__(**kwargs)
         
-        self.dlatent_size = 256
+        self.dlatent_size = 128
         self.dlatent_vector = (int(np.log2(resolution))-1)*2
         self.mapping_layers = 8
         self.lrmul = 0.01
@@ -25,7 +25,7 @@ class MappingNetwork(tf.keras.layers.Layer):
 
         self.weights_dict = {}
         for i in range(self.mapping_layers):
-            setattr(self, 'Dense{}'.format(i), DenseLayer(fmaps=256, lrmul=self.lrmul, name='Dense{}'.format(i)))
+            setattr(self, 'Dense{}'.format(i), DenseLayer(fmaps=128, lrmul=self.lrmul, name='Dense{}'.format(i)))
     
         self.g_mapping_broadcast = tf.keras.layers.RepeatVector(self.dlatent_vector)
             
@@ -78,7 +78,7 @@ class SynthesisNetwork(tf.keras.layers.Layer):
     def build(self, input_shape):
         
         #constant layer
-        self.const_4_4 = self.add_weight(name='4x4/Const/const', shape=(1, 256, 4, 4),
+        self.const_4_4 = self.add_weight(name='4x4/Const/const', shape=(1, 128, 4, 4),
                                         initializer=tf.random_normal_initializer(0, 1), trainable=True)
         #early layer 4x4
         self.layer_4_4 = SynthesisMainLayer(fmaps=nf(1), impl=self.impl, gpu=self.gpu, name='4x4')
@@ -147,7 +147,7 @@ class StyleGan2Generator(tf.keras.layers.Layer):
         # load weights
         if weights is not None:
             #we run the network to define it, not the most efficient thing to do...
-            _ = self(tf.zeros(shape=(1, 256)))
+            _ = self(tf.zeros(shape=(1, 128)))
             self.__load_weights(weights)
         
     def call(self, z):
