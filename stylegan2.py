@@ -113,6 +113,8 @@ class StyleGan2(tf.keras.Model):
         # Decode the noise (guided by labels) to fake images.
         generated_images = self.generator(random_vector_labels)
 
+        generated_images = tf.transopes(generated_images, [0, 2, 3, 1]) # BCHW -> BHWC
+
         # Combine them with real images. Note that we are concatenating the labels
         # with these images here.
         fake_image_and_labels = tf.concat([generated_images, image_one_hot_labels], -1)
@@ -120,6 +122,8 @@ class StyleGan2(tf.keras.Model):
         combined_images = tf.concat(
             [fake_image_and_labels, real_image_and_labels], axis=0
         )
+
+        combined_images = tf.transopes(combined_images, [0, 3, 1, 2]) # BHWC -> BCHW
 
         # Assemble labels discriminating real from fake images.
         labels = tf.concat(
@@ -148,11 +152,18 @@ class StyleGan2(tf.keras.Model):
         # of the discriminator)!
         with tf.GradientTape() as tape:
             fake_images = self.generator(random_vector_labels)
+
+            fake_images = tf.transopes(fake_images, [0, 2, 3, 1])  # BCHW -> BHWC
             fake_image_and_labels = tf.concat([fake_images, image_one_hot_labels], -1)
+            fake_image_and_labels = tf.transopes(fake_image_and_labels, [0, 3, 1, 2])  # BHWC -> BCHW
+
             predictions = self.discriminator(fake_image_and_labels)
             g_loss = self.loss_fn(misleading_labels, predictions)
-        grads = tape.gradient(g_loss, self.generator.trainable_weights)
-        self.g_optimizer.apply_gradients(zip(grads, self.generator.trainable_weights))
+
+        generator_weights = self.generator.mapping_network.trainable_weights \
+                            + self.generator.synthesis_network.trainable_weights
+        grads = tape.gradient(g_loss, generator_weights)
+        self.g_optimizer.apply_gradients(zip(grads, generator_weights))
 
         # # Monitor loss.
         # self.gen_loss_tracker.update_state(g_loss)
