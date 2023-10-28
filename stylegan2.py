@@ -113,7 +113,7 @@ class StyleGan2(tf.keras.Model):
         # Decode the noise (guided by labels) to fake images.
         generated_images = self.generator(random_vector_labels)
 
-        generated_images = tf.transopes(generated_images, [0, 2, 3, 1]) # BCHW -> BHWC
+        generated_images = tf.transpose(generated_images, [0, 2, 3, 1]) # BCHW -> BHWC
 
         # Combine them with real images. Note that we are concatenating the labels
         # with these images here.
@@ -123,7 +123,7 @@ class StyleGan2(tf.keras.Model):
             [fake_image_and_labels, real_image_and_labels], axis=0
         )
 
-        combined_images = tf.transopes(combined_images, [0, 3, 1, 2]) # BHWC -> BCHW
+        combined_images = tf.transpose(combined_images, [0, 3, 1, 2]) # BHWC -> BCHW
 
         # Assemble labels discriminating real from fake images.
         labels = tf.concat(
@@ -153,9 +153,9 @@ class StyleGan2(tf.keras.Model):
         with tf.GradientTape() as tape:
             fake_images = self.generator(random_vector_labels)
 
-            fake_images = tf.transopes(fake_images, [0, 2, 3, 1])  # BCHW -> BHWC
+            fake_images = tf.transpose(fake_images, [0, 2, 3, 1])  # BCHW -> BHWC
             fake_image_and_labels = tf.concat([fake_images, image_one_hot_labels], -1)
-            fake_image_and_labels = tf.transopes(fake_image_and_labels, [0, 3, 1, 2])  # BHWC -> BCHW
+            fake_image_and_labels = tf.transpose(fake_image_and_labels, [0, 3, 1, 2])  # BHWC -> BCHW
 
             predictions = self.discriminator(fake_image_and_labels)
             g_loss = self.loss_fn(misleading_labels, predictions)
