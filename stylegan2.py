@@ -134,10 +134,10 @@ class StyleGan2(tf.keras.Model):
         with tf.GradientTape() as tape:
             predictions = self.discriminator(combined_images)
             d_loss = self.loss_fn(labels, predictions)
-        grads = tape.gradient(d_loss, self.discriminator.trainable_weights)
-        self.d_optimizer.apply_gradients(
-            zip(grads, self.discriminator.trainable_weights)
-        )
+
+            trainable_weights = self.discriminator.trainable_weights
+            grads = tape.gradient(d_loss, trainable_weights)
+            self.d_optimizer.apply_gradients(zip(grads, trainable_weights))
 
         # Sample random points in the latent space.
         random_latent_vectors = tf.random.normal(shape=(batch_size, self.latent_dim))
@@ -160,10 +160,10 @@ class StyleGan2(tf.keras.Model):
             predictions = self.discriminator(fake_image_and_labels)
             g_loss = self.loss_fn(misleading_labels, predictions)
 
-        generator_weights = self.generator.mapping_network.trainable_weights \
-                            + self.generator.synthesis_network.trainable_weights
-        grads = tape.gradient(g_loss, generator_weights)
-        self.g_optimizer.apply_gradients(zip(grads, generator_weights))
+            trainable_weights = (self.generator.mapping_network.trainable_weights
+                                 + self.generator.synthesis_network.trainable_weights)
+            grads = tape.gradient(g_loss, trainable_weights)
+            self.g_optimizer.apply_gradients(zip(grads, trainable_weights))
 
         # # Monitor loss.
         # self.gen_loss_tracker.update_state(g_loss)

@@ -34,8 +34,9 @@ class MappingNetwork(tf.keras.layers.Layer):
         z = tf.cast(z, 'float32')
         
         # Normalize inputs
-        scale = tf.math.rsqrt(tf.reduce_mean(tf.square(z), axis=1, keepdims=True) + 1e-8)
-        x = tf.math.multiply(z, scale)
+        # scale = tf.math.rsqrt(tf.reduce_mean(tf.square(z), axis=1, keepdims=True) + 1e-8)
+        # x = tf.math.multiply(z, scale)
+        x = z
         
         # Mapping
         for i in range(self.mapping_layers):
