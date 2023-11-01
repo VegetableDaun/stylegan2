@@ -80,7 +80,7 @@ class StyleGan2(tf.keras.Model):
         super().compile(*args, **kwargs)
 
     def lambda_t(self, epoch):
-        return min([max([(epoch - self.T_e) / (self.T_e - self.T_s), 0]), 1])
+        return min([max([(epoch - self.T_s) / (self.T_e - self.T_s), 0]), 1])
 
     @staticmethod
     def wasserstein_loss(y_true, y_pred):
