@@ -108,11 +108,8 @@ class StyleGan2(tf.keras.Model):
         with tf.GradientTape() as g_tape:
             fake_images = self.generator(noise, lambda_t=self.lambda_t(self.epoch), c=one_hot_labels)
             pred_fake = self.discriminator(fake_images, c=one_hot_labels)
-            if pred_fake[1] is None:
-                g_loss = self.wasserstein_loss(real_labels, pred_fake[0])
-            else:
-                g_loss = (self.wasserstein_loss(real_labels, pred_fake[0])
-                          + self.lambda_t(self.epoch) * self.wasserstein_loss(real_labels, pred_fake[1]))
+            g_loss = (self.wasserstein_loss(real_labels, pred_fake[0])
+                      + self.lambda_t(self.epoch) * self.wasserstein_loss(real_labels, pred_fake[1]))
 
             trainable_weights = (self.generator.mapping_network.trainable_weights
                                  + self.generator.synthesis_network.trainable_weights)
@@ -131,22 +128,13 @@ class StyleGan2(tf.keras.Model):
             pred_fake_grad = self.discriminator(interpolates, c=one_hot_labels)
 
             # calculate losses
-            if pred_fake[1] is None:
-                loss_fake = self.wasserstein_loss(fake_labels, pred_fake[0])
-            else:
-                loss_fake = (self.wasserstein_loss(fake_labels, pred_fake[0])
+            loss_fake = (self.wasserstein_loss(fake_labels, pred_fake[0])
                              + self.lambda_t(self.epoch) * self.wasserstein_loss(fake_labels, pred_fake[1]))
 
-            if pred_real[1] is None:
-                loss_real = self.wasserstein_loss(real_labels, pred_real[0])
-            else:
-                loss_real = (self.wasserstein_loss(real_labels, pred_real[0])
+            loss_real = (self.wasserstein_loss(real_labels, pred_real[0])
                              + self.lambda_t(self.epoch) * self.wasserstein_loss(real_labels, pred_real[1]))
 
-            if pred_fake_grad[1] is None:
-                loss_fake_grad = self.wasserstein_loss(fake_labels, pred_fake_grad[0])
-            else:
-                loss_fake_grad = (self.wasserstein_loss(real_labels, pred_fake_grad[0])
+            loss_fake_grad = (self.wasserstein_loss(real_labels, pred_fake_grad[0])
                              + self.lambda_t(self.epoch) * self.wasserstein_loss(real_labels, pred_fake_grad[1]))
 
 

@@ -39,7 +39,7 @@ class MappingNetwork(tf.keras.layers.Layer):
         scale = tf.math.rsqrt(tf.reduce_mean(tf.square(z), axis=1, keepdims=True) + 1e-8)
         x = tf.math.multiply(z, scale)
 
-        if (c is not None) and lambda_t >= 0:
+        if c is not None:
             emd_c = self.Conditional_Dense(c)
 
         # Mapping
@@ -47,7 +47,7 @@ class MappingNetwork(tf.keras.layers.Layer):
             x = getattr(self, 'Dense{}'.format(i))(x)
             x = tf.math.multiply(tf.nn.leaky_relu(x, 0.2), tf.math.sqrt(2.))
 
-            if (i == 0) and (c is not None) and lambda_t >= 0:
+            if (i == 0) and (c is not None):
                 x = x + lambda_t * emd_c
         
         # Broadcasting
@@ -160,7 +160,7 @@ class StyleGan2Generator(tf.keras.layers.Layer):
             _ = self(tf.zeros(shape=(1, 128)))
             self.__load_weights(weights)
         
-    def call(self, z, lambda_t=None, c=None):
+    def call(self, z, lambda_t=0, c=None):
         """
 
         Parameters
