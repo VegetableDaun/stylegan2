@@ -23,7 +23,7 @@ class MappingNetwork(tf.keras.layers.Layer):
         
     def build(self, input_shape):
 
-        setattr(self, 'Conditional_Dense', DenseLayer(fmaps=128, lrmul=self.lrmul, name='Conditional_Dense'))
+        self.Conditional_Dense= DenseLayer(fmaps=128, lrmul=self.lrmul, name='Conditional_Dense')
 
         self.weights_dict = {}
         for i in range(self.mapping_layers):
@@ -39,16 +39,16 @@ class MappingNetwork(tf.keras.layers.Layer):
         scale = tf.math.rsqrt(tf.reduce_mean(tf.square(z), axis=1, keepdims=True) + 1e-8)
         x = tf.math.multiply(z, scale)
 
-        if c is not None:
-            emd_c = getattr(self, 'Conditional_Dense')(c)
+        if (c is not None) and lambda_t >= 0:
+            emd_c = self.Conditional_Dense(c)
 
         # Mapping
         for i in range(self.mapping_layers):
             x = getattr(self, 'Dense{}'.format(i))(x)
             x = tf.math.multiply(tf.nn.leaky_relu(x, 0.2), tf.math.sqrt(2.))
 
-            if (i == 0) and (c is not None) and (lambda_t is None):
-                x += lambda_t * emd_c
+            if (i == 0) and (c is not None) and lambda_t >= 0:
+                x = x + lambda_t * emd_c
         
         # Broadcasting
         dlatents = self.g_mapping_broadcast(x)
