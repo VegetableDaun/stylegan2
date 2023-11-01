@@ -9,6 +9,8 @@ from layers.block_layer import BlockLayer
 from layers.conv_2d_layer import Conv2DLayer
 from layers.dense_layer import DenseLayer
 
+from config_GAN import num_classes
+
 class StyleGan2Discriminator(tf.keras.layers.Layer):
     """
     StyleGan2 discriminator config f for tensorflow 2.x
@@ -63,9 +65,12 @@ class StyleGan2Discriminator(tf.keras.layers.Layer):
         self.conv_4_4_bias = self.add_weight(name='4x4/Conv/bias', shape=(128,),
                                              initializer=tf.random_normal_initializer(0,1), trainable=True)
         self.dense_4_4 = DenseLayer(fmaps=128, name='4x4/Dense0')
-        self.dense_output = DenseLayer(fmaps=1, name='Output')
 
-    def call(self, y):
+        self.dense_output_c = DenseLayer(fmaps=num_classes, name='Output_c')
+        self.dense_output_uc = DenseLayer(fmaps=1, name='Output_uc')
+
+
+    def call(self, y, c=None):
         """
 
         Parameters
@@ -97,10 +102,16 @@ class StyleGan2Discriminator(tf.keras.layers.Layer):
         # dense layer
         x = self.dense_4_4(x)
         x = tf.math.multiply(tf.nn.leaky_relu(x, 0.2), tf.math.sqrt(2.))
-        #output layer
-        x = self.dense_output(x)
 
-        return tf.identity(x, name='scores_out')
+        #output layers
+        x_uc = self.dense_output_uc(x)
+        if c is not None:
+            output = self.dense_output_c(x)
+            x_c = tf.reduce_sum(tf.multiply(output, c), axis=1, keepdims=True)
+        else:
+            x_c = None
+
+        return [tf.identity(x_uc, name='scores_out_uc'), tf.identity(x_c, name='scores_out_c')]
 
     def __adjust_resolution(self, weights_name):
         """
