@@ -111,10 +111,14 @@ class StyleGan2Discriminator(tf.keras.layers.Layer):
         if c is not None:
             output = self.dense_output_c(x)
             x_c = tf.reduce_sum(tf.multiply(output, c), axis=1, keepdims=True)
+
+            return [tf.identity(x_uc, name='scores_out_uc'), tf.identity(x_c, name='scores_out_c')]
         else:
             x_c = None
 
-        return [tf.identity(x_uc, name='scores_out_uc'), tf.identity(x_c, name='scores_out_c')]
+            return [tf.identity(x_uc, name='scores_out_uc'), x_c]
+
+
 
     def __adjust_resolution(self, weights_name):
         """
