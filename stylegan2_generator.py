@@ -23,7 +23,10 @@ class MappingNetwork(tf.keras.layers.Layer):
         
     def build(self, input_shape):
 
-        self.Conditional_Dense= DenseLayer(fmaps=128, lrmul=self.lrmul, name='Conditional_Dense')
+        self.Conditional_Dense_16 = DenseLayer(fmaps=16, lrmul=self.lrmul, name='Conditional_Dense_16')
+        self.Conditional_Dense_32 = DenseLayer(fmaps=32, lrmul=self.lrmul, name='Conditional_Dense_32')
+        self.Conditional_Dense_64 = DenseLayer(fmaps=64, lrmul=self.lrmul, name='Conditional_Dense_64')
+        self.Conditional_Dense_128= DenseLayer(fmaps=128, lrmul=self.lrmul, name='Conditional_Dense_128')
 
         self.weights_dict = {}
         for i in range(self.mapping_layers):
@@ -41,7 +44,17 @@ class MappingNetwork(tf.keras.layers.Layer):
 
         if c is not None:
             c = tf.cast(c, 'float32')
-            emd_c = self.Conditional_Dense(c)
+            emd_c = self.Conditional_Dense_16(c)
+            emd_c = tf.math.multiply(tf.nn.leaky_relu(emd_c, 0.2), tf.math.sqrt(2.))
+
+            emd_c = self.Conditional_Dense_32(emd_c)
+            emd_c = tf.math.multiply(tf.nn.leaky_relu(emd_c, 0.2), tf.math.sqrt(2.))
+            
+            emd_c = self.Conditional_Dense_64(emd_c)
+            emd_c = tf.math.multiply(tf.nn.leaky_relu(emd_c, 0.2), tf.math.sqrt(2.))
+
+            emd_c = self.Conditional_Dense_128(emd_c)
+            emd_c = tf.math.multiply(tf.nn.leaky_relu(emd_c, 0.2), tf.math.sqrt(2.))
 
         # Mapping
         for i in range(self.mapping_layers):
