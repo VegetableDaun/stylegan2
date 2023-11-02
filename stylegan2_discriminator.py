@@ -66,7 +66,11 @@ class StyleGan2Discriminator(tf.keras.layers.Layer):
                                              initializer=tf.random_normal_initializer(0,1), trainable=True)
         self.dense_4_4 = DenseLayer(fmaps=128, name='4x4/Dense0')
 
-        self.dense_output_c = DenseLayer(fmaps=num_classes, name='Output_c')
+        self.dense_output_c_64 = DenseLayer(fmaps=64, name='Output_c_64')
+        self.dense_output_c_32 = DenseLayer(fmaps=32, name='Output_c_32')
+        self.dense_output_c_16 = DenseLayer(fmaps=16, name='Output_c_16')
+        self.dense_output_c_10 = DenseLayer(fmaps=num_classes, name='Output_c')
+
         self.dense_output_uc = DenseLayer(fmaps=1, name='Output_uc')
 
 
@@ -109,7 +113,10 @@ class StyleGan2Discriminator(tf.keras.layers.Layer):
         #output layers
         x_uc = self.dense_output_uc(x)
         if c is not None:
-            output = self.dense_output_c(x)
+            emb_x = self.dense_output_c_64(x)
+            emb_x = self.dense_output_c_32(emb_x)
+            emb_x = self.dense_output_c_16(emb_x)
+            output = self.dense_output_c_10(emb_x)
             x_c = tf.reduce_sum(tf.multiply(output, c), axis=1, keepdims=True)
 
             return [tf.identity(x_uc, name='scores_out_uc'), tf.identity(x_c, name='scores_out_c')]
