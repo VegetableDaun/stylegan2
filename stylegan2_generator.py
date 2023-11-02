@@ -40,6 +40,7 @@ class MappingNetwork(tf.keras.layers.Layer):
         x = tf.math.multiply(z, scale)
 
         if c is not None:
+            c = tf.cast(c, 'float32')
             emd_c = self.Conditional_Dense(c)
 
         # Mapping

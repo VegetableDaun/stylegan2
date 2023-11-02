@@ -56,7 +56,7 @@ class StyleGan2(tf.keras.Model):
         -------
         score : output of the discriminator. 
         """
-        img = self.generator(latent_vector, lamda_t=1, c=c)
+        img = self.generator(latent_vector, lambda_t=1, c=c)
         score = self.discriminator(img, c=c)
 
         return score
