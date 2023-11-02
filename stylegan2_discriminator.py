@@ -85,6 +85,9 @@ class StyleGan2Discriminator(tf.keras.layers.Layer):
         y = tf.cast(y, 'float32')
         x = None
 
+        if c is not None:
+            c = tf.cast(c, 'float32')
+
         for res in range(self.resolution_log2, 2, -1):
             if  res == self.resolution_log2:
                 x = self.from_rgb(x, y)
