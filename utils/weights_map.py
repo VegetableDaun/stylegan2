@@ -171,7 +171,7 @@ discriminator_weights_256 =  ['disc_4x4/Conv/bias',
                             'disc_Output/weight',
                             'disc_Output/bias']
 
-discriminator_weights_128 = ['Discriminator/4x4/Conv/bias',
+discriminator_weights_32 = ['Discriminator/4x4/Conv/bias',
                              'Discriminator/32x32/FromRGB/bias',
                              'Discriminator/32x32/FromRGB/weight',
                              'Discriminator/32x32/Conv0/bias',
@@ -217,5 +217,5 @@ discriminator_weights = {
     'cat' : discriminator_weights_256,
     'horse' : discriminator_weights_256,
     'church' : discriminator_weights_256,
-    'MNIST' : discriminator_weights_128
+    'MNIST' : discriminator_weights_32
     }
