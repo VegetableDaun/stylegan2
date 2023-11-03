@@ -211,5 +211,5 @@ discriminator_weights = {
     'cat' : discriminator_weights_256,
     'horse' : discriminator_weights_256,
     'church' : discriminator_weights_256,
-    'MNIST' : discriminator_weights_32
-    }
+    'MNIST' : discriminator_weights_32,
+    32 : discriminator_weights_32}

@@ -185,6 +185,18 @@ class StyleGan2Discriminator(tf.keras.layers.Layer):
         for i in trainable_weights:
             data[i.name[i.name.find('/') + 1 : len(i.name) - 2]] = i.numpy()
 
-        with open(path_to_save + '.npy', 'wb') as f:
-            np.save(f, data, allow_pickle=True)
+        # with open(path_to_save, 'wb') as f:
+        np.save(path_to_save, data, allow_pickle=True)
+
+    def load_weights(self, path_to_weights):
+        _ = self(tf.zeros(shape=(4, 3, self.resolution, self.resolution)), tf.zeros(shape=(4, num_classes)))
+
+        try:
+            data = np.load(path_to_weights, allow_pickle=True)[()]
+
+            weights_discriminator = [data.get(key) for key in discriminator_weights[self.resolution]]
+            self.set_weights(weights_discriminator)
+        except Exception('Wrong weight file!'):
+            pass
+        print("Loaded {} pixel discriminator weights!".format(self.resolution))
 
