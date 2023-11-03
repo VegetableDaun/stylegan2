@@ -258,11 +258,10 @@ class StyleGan2Generator(tf.keras.layers.Layer):
         """
 
         trainable_weights = self.mapping_network.trainable_weights + self.synthesis_network.trainable_weights
-        data = []
+        data = {}
         for i in trainable_weights:
             # print(i)
-            # data[i.name[i.name.find('/') + 1: len(i.name) - 2]] = i.numpy()
-            data[i.name] = i.numpy()
+            data[i.name[i.name.find('/') + 1: len(i.name) - 2]] = i.numpy()
 
         # with open(path_to_save + '.npy', 'wb') as f:
         np.save(path_to_save, data, allow_pickle=True)
