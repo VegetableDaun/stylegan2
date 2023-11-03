@@ -227,7 +227,7 @@ class StyleGan2Generator(tf.keras.layers.Layer):
         Load pretrained weights, stored as a dict with numpy arrays.
         Parameters
         ----------
-        weights_name : name of the weights
+        weights_name : name of the weights from best models
 
         Returns
         -------
@@ -253,7 +253,7 @@ class StyleGan2Generator(tf.keras.layers.Layer):
         Save pretrained weights as a dict with numpy arrays.
         Parameters
         ----------
-        path_to_save : path where will be saved file with name and type of file
+        path_to_save : path where will be saved weight file with name and type of file
 
         """
 
@@ -266,6 +266,17 @@ class StyleGan2Generator(tf.keras.layers.Layer):
         np.save(path_to_save, data, allow_pickle=True)
 
     def load(self, path_to_weights):
+        """
+        Load pretrained weights, stored as a dict with numpy arrays.
+        Parameters
+        ----------
+        path_to_weights : path where store saved weight file with name and type of file
+
+        Returns
+        -------
+        None.
+
+        """
         _ = self(tf.zeros(shape=(1, 128)), lambda_t=1, c=tf.zeros(shape=(1, num_classes)))
 
         try:

@@ -179,3 +179,5 @@ class StyleGan2(tf.keras.Model):
             self.resolution = 512
         elif weights_name in ['cat', 'church', 'horse']:
             self.resolution = 256
+        elif weights_name in ['MNIST']:
+            self.resolution = 32
