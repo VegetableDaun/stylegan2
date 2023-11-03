@@ -150,7 +150,7 @@ class StyleGan2Discriminator(tf.keras.layers.Layer):
         elif weights_name in ['cat', 'church', 'horse']:
             self.resolution = 256
         elif weights_name in ['MNIST']:
-            self.resolution = 128
+            self.resolution = 32
 
     def __load_weights(self, weights_name):
         """
