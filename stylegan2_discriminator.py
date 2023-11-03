@@ -171,7 +171,7 @@ class StyleGan2Discriminator(tf.keras.layers.Layer):
         else:
             print('Cannot load the specified weights')
 
-    def save_weights(self, path_to_save):
+    def save(self, path_to_save):
         """
         Save pretrained weights as a dict with numpy arrays.
         Parameters
@@ -188,7 +188,7 @@ class StyleGan2Discriminator(tf.keras.layers.Layer):
         # with open(path_to_save, 'wb') as f:
         np.save(path_to_save, data, allow_pickle=True)
 
-    def load_weights(self, path_to_weights):
+    def load(self, path_to_weights):
         _ = self(tf.zeros(shape=(4, 3, self.resolution, self.resolution)), tf.zeros(shape=(4, num_classes)))
 
         try:
