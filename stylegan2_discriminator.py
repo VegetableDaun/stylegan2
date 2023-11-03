@@ -66,11 +66,12 @@ class StyleGan2Discriminator(tf.keras.layers.Layer):
                                              initializer=tf.random_normal_initializer(0,1), trainable=True)
         self.dense_4_4 = DenseLayer(fmaps=128, name='4x4/Dense0')
 
-        self.dense_output_c_64 = DenseLayer(fmaps=64, name='Output_c_64')
-        self.dense_output_c_32 = DenseLayer(fmaps=32, name='Output_c_32')
-        self.dense_output_c_16 = DenseLayer(fmaps=16, name='Output_c_16')
-        self.dense_output_c_10 = DenseLayer(fmaps=num_classes, name='Output_c')
+        # self.dense_output_c_64 = DenseLayer(fmaps=64, name='Output_c_64')
+        # self.dense_output_c_32 = DenseLayer(fmaps=32, name='Output_c_32')
+        # self.dense_output_c_16 = DenseLayer(fmaps=16, name='Output_c_16')
+        # self.dense_output_c_10 = DenseLayer(fmaps=num_classes, name='Output_c')
 
+        self.dense_output_c = DenseLayer(fmaps=10, name='Output_c')
         self.dense_output_uc = DenseLayer(fmaps=1, name='Output_uc')
 
 
@@ -113,16 +114,16 @@ class StyleGan2Discriminator(tf.keras.layers.Layer):
         #output layers
         x_uc = self.dense_output_uc(x)
         if c is not None:
-            emb_x = self.dense_output_c_64(x)
-            emb_x = tf.math.multiply(tf.nn.leaky_relu(emb_x, 0.2), tf.math.sqrt(2.))
+            # emb_x = self.dense_output_c_64(x)
+            # emb_x = tf.math.multiply(tf.nn.leaky_relu(emb_x, 0.2), tf.math.sqrt(2.))
+            #
+            # emb_x = self.dense_output_c_32(emb_x)
+            # emb_x = tf.math.multiply(tf.nn.leaky_relu(emb_x, 0.2), tf.math.sqrt(2.))
+            #
+            # emb_x = self.dense_output_c_16(emb_x)
+            # emb_x = tf.math.multiply(tf.nn.leaky_relu(emb_x, 0.2), tf.math.sqrt(2.))
 
-            emb_x = self.dense_output_c_32(emb_x)
-            emb_x = tf.math.multiply(tf.nn.leaky_relu(emb_x, 0.2), tf.math.sqrt(2.))
-
-            emb_x = self.dense_output_c_16(emb_x)
-            emb_x = tf.math.multiply(tf.nn.leaky_relu(emb_x, 0.2), tf.math.sqrt(2.))
-
-            output = self.dense_output_c_10(emb_x)
+            output = self.dense_output_c(x)
             x_c = tf.reduce_sum(tf.multiply(output, c), axis=1, keepdims=True)
 
             return [tf.identity(x_uc, name='scores_out_uc'), tf.identity(x_c, name='scores_out_c')]
@@ -148,6 +149,8 @@ class StyleGan2Discriminator(tf.keras.layers.Layer):
             self.resolution = 512
         elif weights_name in ['cat', 'church', 'horse']:
             self.resolution = 256
+        elif weights_name in ['MNIST']:
+            self.resolution = 128
 
     def __load_weights(self, weights_name):
         """
@@ -167,3 +170,21 @@ class StyleGan2Discriminator(tf.keras.layers.Layer):
             print("Loaded {} discriminator weights!".format(weights_name))
         else:
             print('Cannot load the specified weights')
+
+    def __save_weights(self, path_to_save):
+        """
+        Save pretrained weights as a dict with numpy arrays.
+        Parameters
+        ----------
+        path_to_save : path where will be saved file with name and type of file
+
+        """
+
+        trainable_weights = self.trainable_weights
+        data = {}
+        for i in trainable_weights:
+            data[i.name[i.name.find('/') + 1 : len(i.name) - 2]] = i.numpy()
+
+        with open(path_to_save + '.npy', 'wb') as f:
+            np.save(f, data, allow_pickle=True)
+

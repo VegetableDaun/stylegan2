@@ -210,6 +210,8 @@ class StyleGan2Generator(tf.keras.layers.Layer):
             self.resolution = 512
         elif weights_name in ['cat', 'church', 'horse']: 
             self.resolution = 256
+        elif weights_name in ['MNIST']:
+            self.resolution = 128
     
     def __load_weights(self, weights_name):
         """
@@ -236,3 +238,20 @@ class StyleGan2Generator(tf.keras.layers.Layer):
             print("Loaded {} generator weights!".format(weights_name))
         else:
             raise Exception('Cannot load {} weights'.format(weights_name))
+
+    def __save_weights(self, path_to_save):
+        """
+        Save pretrained weights as a dict with numpy arrays.
+        Parameters
+        ----------
+        path_to_save : path where will be saved file with name and type of file
+
+        """
+
+        trainable_weights = self.mapping_network.trainable_weights + self.synthesis_network.trainable_weights
+        data = []
+        for i in trainable_weights:
+            data[i.name[i.name.find('/') + 1 : len(i.name) - 2]] = i.numpy()
+
+        with open(path_to_save + '.npy', 'wb') as f:
+            np.save(f, data, allow_pickle=True)
