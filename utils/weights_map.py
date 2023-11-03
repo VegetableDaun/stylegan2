@@ -16,11 +16,11 @@ mapping_weights = ['Generator/Mapping_network/Conditional_Dense/weight', 'Genera
 
 def get_synthesis_name_weights(resolution):
     synthesis_weights = ['Generator/Synthesis_network/4x4/Const/const',
-                         'Generator/Synthesis_network/4x4/Conv/noise_strength',
-                         'Generator/Synthesis_network/4x4/Conv/bias',
-                         'Generator/Synthesis_network/4x4/Conv/mod_bias',
-                         'Generator/Synthesis_network/4x4/Conv/mod_weight',
-                         'Generator/Synthesis_network/4x4/Conv/weight',
+                         'Generator/Synthesis_network/4x4/Conv1/noise_strength',
+                         'Generator/Synthesis_network/4x4/Conv1/bias',
+                         'Generator/Synthesis_network/4x4/Conv1/mod_bias',
+                         'Generator/Synthesis_network/4x4/Conv1/mod_weight',
+                         'Generator/Synthesis_network/4x4/Conv1/weight',
                          'Generator/Synthesis_network/4x4/ToRGB/bias',
                          'Generator/Synthesis_network/4x4/ToRGB/mod_bias',
                          'Generator/Synthesis_network/4x4/ToRGB/mod_weight',
