@@ -1,6 +1,6 @@
 import numpy as np
 
-available_weights = ['ffhq', 'car', 'cat', 'church', 'horse']
+available_weights = ['ffhq', 'car', 'cat', 'church', 'horse', 'MNIST']
 weights_stylegan2_dir = 'weights/'
 
 mapping_weights = [ 'Dense0/weight', 'Dense0/bias',
@@ -171,6 +171,38 @@ discriminator_weights_256 =  ['disc_4x4/Conv/bias',
                             'disc_Output/weight',
                             'disc_Output/bias']
 
+discriminator_weights_128 = ['Discriminator/4x4/Conv/bias',
+                             'Discriminator/32x32/FromRGB/bias',
+                             'Discriminator/32x32/FromRGB/weight',
+                             'Discriminator/32x32/Conv0/bias',
+                             'Discriminator/32x32/Conv1_down/bias',
+                             'Discriminator/32x32/Conv0/weight',
+                             'Discriminator/32x32/Conv1_down/weight',
+                             'Discriminator/32x32/Skip/weight',
+                             'Discriminator/16x16/Conv0/bias',
+                             'Discriminator/16x16/Conv1_down/bias',
+                             'Discriminator/16x16/Conv0/weight',
+                             'Discriminator/16x16/Conv1_down/weight',
+                             'Discriminator/16x16/Skip/weight',
+                             'Discriminator/8x8/Conv0/bias',
+                             'Discriminator/8x8/Conv1_down/bias',
+                             'Discriminator/8x8/Conv0/weight',
+                             'Discriminator/8x8/Conv1_down/weight',
+                             'Discriminator/8x8/Skip/weight',
+                             'Discriminator/4x4/Conv/weight',
+                             'Discriminator/4x4/Dense0/weight',
+                             'Discriminator/4x4/Dense0/bias',
+                             'Discriminator/Output_c_64/weight',
+                             'Discriminator/Output_c_64/bias',
+                             'Discriminator/Output_c_32/weight',
+                             'Discriminator/Output_c_32/bias',
+                             'Discriminator/Output_c_16/weight',
+                             'Discriminator/Output_c_16/bias',
+                             'Discriminator/Output_c/weight',
+                             'Discriminator/Output_c/bias',
+                             'Discriminator/Output_uc/weight',
+                             'Discriminator/Output_uc/bias']
+
 synthesis_weights = {
     'ffhq' : synthesis_weights_1024,
     'car' : synthesis_weights_512,
@@ -184,5 +216,6 @@ discriminator_weights = {
     'car' : discriminator_weights_512,
     'cat' : discriminator_weights_256,
     'horse' : discriminator_weights_256,
-    'church' : discriminator_weights_256
+    'church' : discriminator_weights_256,
+    'MNIST' : discriminator_weights_128
     }
