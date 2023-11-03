@@ -1,20 +1,21 @@
-import tensorflow as tf
 import numpy as np
+import tensorflow as tf
 
-from utils.weights_map import available_weights, weights_stylegan2_dir, discriminator_weights
-from utils.utils_stylegan2 import nf
-from layers.mini_batch_std_layer import MinibatchStdLayer
-from layers.from_rgb_layer import FromRgbLayer
+from config_GAN import num_classes
 from layers.block_layer import BlockLayer
 from layers.conv_2d_layer import Conv2DLayer
 from layers.dense_layer import DenseLayer
+from layers.from_rgb_layer import FromRgbLayer
+from layers.mini_batch_std_layer import MinibatchStdLayer
+from utils.utils_stylegan2 import nf
+from utils.weights_map import available_weights, weights_stylegan2_dir, discriminator_weights
 
-from config_GAN import num_classes
 
 class StyleGan2Discriminator(tf.keras.layers.Layer):
     """
     StyleGan2 discriminator config f for tensorflow 2.x
     """
+
     def __init__(self, resolution=1024, weights=None, impl='cuda', gpu=True, **kwargs):
         """
         Parameters
@@ -49,21 +50,21 @@ class StyleGan2Discriminator(tf.keras.layers.Layer):
     def build(self, input_shape):
 
         self.mini_btch_std_layer = MinibatchStdLayer()
-        self.from_rgb = FromRgbLayer(fmaps=nf(self.resolution_log2-1),
+        self.from_rgb = FromRgbLayer(fmaps=nf(self.resolution_log2 - 1),
                                      name='{}x{}'.format(self.resolution, self.resolution),
                                      impl=self.impl, gpu=self.gpu)
 
         for res in range(self.resolution_log2, 2, -1):
-            res_str = str(2**res)
+            res_str = str(2 ** res)
             setattr(self, 'block_{}_{}'.format(res_str, res_str),
                     BlockLayer(res=res, name='{}x{}'.format(res_str, res_str),
                                impl=self.impl, gpu=self.gpu))
 
-        #last layers
+        # last layers
         self.conv_4_4 = Conv2DLayer(fmaps=nf(1), kernel=3, impl=self.impl,
                                     gpu=self.gpu, name='4x4/Conv')
         self.conv_4_4_bias = self.add_weight(name='4x4/Conv/bias', shape=(128,),
-                                             initializer=tf.random_normal_initializer(0,1), trainable=True)
+                                             initializer=tf.random_normal_initializer(0, 1), trainable=True)
         self.dense_4_4 = DenseLayer(fmaps=128, name='4x4/Dense0')
 
         # self.dense_output_c_64 = DenseLayer(fmaps=64, name='Output_c_64')
@@ -73,7 +74,6 @@ class StyleGan2Discriminator(tf.keras.layers.Layer):
 
         self.dense_output_c = DenseLayer(fmaps=10, name='Output_c')
         self.dense_output_uc = DenseLayer(fmaps=1, name='Output_uc')
-
 
     def call(self, y, c=None):
         """
@@ -94,14 +94,14 @@ class StyleGan2Discriminator(tf.keras.layers.Layer):
             c = tf.cast(c, 'float32')
 
         for res in range(self.resolution_log2, 2, -1):
-            if  res == self.resolution_log2:
+            if res == self.resolution_log2:
                 x = self.from_rgb(x, y)
-            x = getattr(self, 'block_{}_{}'.format(2**res, 2**res))(x)
+            x = getattr(self, 'block_{}_{}'.format(2 ** res, 2 ** res))(x)
 
-        #minibatch std dev
+        # minibatch std dev
         x = self.mini_btch_std_layer(x)
 
-        #last convolution layer
+        # last convolution layer
         x = self.conv_4_4(x)
         x += tf.reshape(self.conv_4_4_bias, [-1 if i == 1 else 1 for i in range(x.shape.rank)])
         x = tf.math.multiply(tf.nn.leaky_relu(x, 0.2), tf.math.sqrt(2.))
@@ -111,7 +111,7 @@ class StyleGan2Discriminator(tf.keras.layers.Layer):
         x = self.dense_4_4(x)
         x = tf.math.multiply(tf.nn.leaky_relu(x, 0.2), tf.math.sqrt(2.))
 
-        #output layers
+        # output layers
         x_uc = self.dense_output_uc(x)
         if c is not None:
             # emb_x = self.dense_output_c_64(x)
@@ -132,8 +132,6 @@ class StyleGan2Discriminator(tf.keras.layers.Layer):
 
             return [tf.identity(x_uc, name='scores_out_uc'), x_c]
 
-
-
     def __adjust_resolution(self, weights_name):
         """
         Adjust resolution of the synthesis network output.
@@ -143,7 +141,7 @@ class StyleGan2Discriminator(tf.keras.layers.Layer):
         weights_name : name of the weights
 
         """
-        if  weights_name == 'ffhq':
+        if weights_name == 'ffhq':
             self.resolution = 1024
         elif weights_name == 'car':
             self.resolution = 512
@@ -183,7 +181,7 @@ class StyleGan2Discriminator(tf.keras.layers.Layer):
         trainable_weights = self.trainable_weights
         data = {}
         for i in trainable_weights:
-            data[i.name[i.name.find('/') + 1 : len(i.name) - 2]] = i.numpy()
+            data[i.name[i.name.find('/') + 1: len(i.name) - 2]] = i.numpy()
 
         # with open(path_to_save, 'wb') as f:
         np.save(path_to_save, data, allow_pickle=True)
@@ -199,4 +197,3 @@ class StyleGan2Discriminator(tf.keras.layers.Layer):
         except Exception('Wrong file weight!'):
             pass
         print("Loaded {} pixels discriminator weights!".format(self.resolution))
-
