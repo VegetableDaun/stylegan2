@@ -196,7 +196,7 @@ class StyleGan2Discriminator(tf.keras.layers.Layer):
 
             weights_discriminator = [data.get(key) for key in discriminator_weights[self.resolution]]
             self.set_weights(weights_discriminator)
-        except Exception('Wrong weight file!'):
+        except Exception('Wrong file weight!'):
             pass
-        print("Loaded {} pixel discriminator weights!".format(self.resolution))
+        print("Loaded {} pixels discriminator weights!".format(self.resolution))
 
