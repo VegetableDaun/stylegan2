@@ -206,6 +206,7 @@ synthesis_weights = {
     'cat': synthesis_weights_256,
     'horse': synthesis_weights_256,
     'church': synthesis_weights_256,
+    'MNIST' : synthesis_weights_32,
     32 : synthesis_weights_32
 }
 
