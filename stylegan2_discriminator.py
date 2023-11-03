@@ -43,7 +43,7 @@ class StyleGan2Discriminator(tf.keras.layers.Layer):
 
         # load weights
         if weights is not None:
-            _ = self(tf.zeros(shape=(1, 3, self.resolution, self.resolution)))
+            _ = self(tf.zeros(shape=(4, 3, self.resolution, self.resolution)))
             self.__load_weights(weights)
 
     def build(self, input_shape):
