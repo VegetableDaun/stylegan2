@@ -37,11 +37,11 @@ class MappingNetwork(tf.keras.layers.Layer):
 
         self.g_mapping_broadcast = tf.keras.layers.RepeatVector(self.dlatent_vector)
 
-    def call(self, z, lambda_t=None, c=None):
+    def call(self, z, lambda_t=0, c=None):
 
         z = tf.cast(z, 'float32')
 
-        # Normalize inputs
+        # Normalize input z
         scale = tf.math.rsqrt(tf.reduce_mean(tf.square(z), axis=1, keepdims=True) + 1e-8)
         x = tf.math.multiply(z, scale)
 

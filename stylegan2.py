@@ -35,9 +35,6 @@ class StyleGan2(tf.keras.Model):
         self.latent_dim = latent_dim
         self.loss_weights = {"gradient_penalty": 10, "drift": 0.001}
 
-        self.gen_loss_tracker = keras.metrics.Mean(name="generator_loss")
-        self.disc_loss_tracker = keras.metrics.Mean(name="discriminator_loss")
-
         self.resolution = resolution
         if weights is not None:
             self.__adjust_resolution(weights)
