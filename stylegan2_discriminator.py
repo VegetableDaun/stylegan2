@@ -87,11 +87,12 @@ class StyleGan2Discriminator(tf.keras.layers.Layer):
         output of the discriminator.
 
         """
-        y = tf.cast(y, 'float32')
-        x = None
 
-        if c is not None:
-            c = tf.cast(c, 'float32')
+        assert c is None, "Use conditional"
+
+        y = tf.cast(y, 'float32')
+        c = tf.cast(c, 'float32')
+        x = None
 
         for res in range(self.resolution_log2, 2, -1):
             if res == self.resolution_log2:
@@ -111,26 +112,22 @@ class StyleGan2Discriminator(tf.keras.layers.Layer):
         x = self.dense_4_4(x)
         x = tf.math.multiply(tf.nn.leaky_relu(x, 0.2), tf.math.sqrt(2.))
 
-        # output layers
+        # unconditional output layers
         x_uc = self.dense_output_uc(x)
-        if c is not None:
-            # emb_x = self.dense_output_c_64(x)
-            # emb_x = tf.math.multiply(tf.nn.leaky_relu(emb_x, 0.2), tf.math.sqrt(2.))
-            #
-            # emb_x = self.dense_output_c_32(emb_x)
-            # emb_x = tf.math.multiply(tf.nn.leaky_relu(emb_x, 0.2), tf.math.sqrt(2.))
-            #
-            # emb_x = self.dense_output_c_16(emb_x)
-            # emb_x = tf.math.multiply(tf.nn.leaky_relu(emb_x, 0.2), tf.math.sqrt(2.))
+        # emb_x = self.dense_output_c_64(x)
+        # emb_x = tf.math.multiply(tf.nn.leaky_relu(emb_x, 0.2), tf.math.sqrt(2.))
+        #
+        # emb_x = self.dense_output_c_32(emb_x)
+        # emb_x = tf.math.multiply(tf.nn.leaky_relu(emb_x, 0.2), tf.math.sqrt(2.))
+        #
+        # emb_x = self.dense_output_c_16(emb_x)
+        # emb_x = tf.math.multiply(tf.nn.leaky_relu(emb_x, 0.2), tf.math.sqrt(2.))
 
-            output = self.dense_output_c(x)
-            x_c = tf.reduce_sum(tf.multiply(output, c), axis=1, keepdims=True)
+        # conditional output layers
+        output = self.dense_output_c(x)
+        x_c = tf.reduce_sum(tf.multiply(output, c), axis=1, keepdims=True)
 
-            return [tf.identity(x_uc, name='scores_out_uc'), tf.identity(x_c, name='scores_out_c')]
-        else:
-            x_c = None
-
-            return [tf.identity(x_uc, name='scores_out_uc'), x_c]
+        return [tf.identity(x_uc, name='scores_out_uc'), tf.identity(x_c, name='scores_out_c')]
 
     def __adjust_resolution(self, weights_name):
         """
