@@ -43,7 +43,7 @@ class StyleGan2(tf.keras.Model):
         self.discriminator = StyleGan2Discriminator(resolution=self.resolution, weights=weights,
                                                     impl=impl, gpu=gpu, name='Discriminator')
 
-    def call(self, latent_vector, c=None):
+    def call(self, latent_vector=1, c=None):
         """
         Parameters
         ----------
@@ -53,7 +53,10 @@ class StyleGan2(tf.keras.Model):
         -------
         score : output of the discriminator. 
         """
-        img = self.generator(latent_vector, lambda_t=1, c=c)
+
+        assert c is not None, "Use conditional"
+
+        img = self.generator(latent_vector, lambda_t=latent_vector, c=c)
         score = self.discriminator(img, c=c)
 
         return score
@@ -106,7 +109,7 @@ class StyleGan2(tf.keras.Model):
             fake_images = self.generator(noise, lambda_t=self.lambda_t(self.epoch), c=one_hot_labels)
             pred_fake = self.discriminator(fake_images, c=one_hot_labels)
             g_loss = (self.wasserstein_loss(real_labels, pred_fake[0])
-                      + self.lambda_t(self.epoch) * self.wasserstein_loss(real_labels, pred_fake[1]))
+                      + self.lambda_t(self.epoch) * pred_fake[1])
 
             trainable_weights = (self.generator.mapping_network.trainable_weights
                                  + self.generator.synthesis_network.trainable_weights)
@@ -126,13 +129,13 @@ class StyleGan2(tf.keras.Model):
 
             # calculate losses
             loss_fake = (self.wasserstein_loss(fake_labels, pred_fake[0])
-                             + self.lambda_t(self.epoch) * self.wasserstein_loss(fake_labels, pred_fake[1]))
+                             + self.lambda_t(self.epoch) * pred_fake[1])
 
             loss_real = (self.wasserstein_loss(real_labels, pred_real[0])
-                             + self.lambda_t(self.epoch) * self.wasserstein_loss(real_labels, pred_real[1]))
+                             + self.lambda_t(self.epoch) * pred_real[1])
 
             loss_fake_grad = (self.wasserstein_loss(real_labels, pred_fake_grad[0])
-                             + self.lambda_t(self.epoch) * self.wasserstein_loss(real_labels, pred_fake_grad[1]))
+                             + self.lambda_t(self.epoch) * pred_fake_grad[1])
 
 
             # gradient penalty
@@ -149,6 +152,10 @@ class StyleGan2(tf.keras.Model):
 
             gradients = total_tape.gradient(d_loss, self.discriminator.trainable_weights)
             self.d_optimizer.apply_gradients(zip(gradients, self.discriminator.trainable_weights))
+
+        if self.epoch == 30:
+            self.generator.save("GEN_30.npy")
+            self.discriminator.save("DIS_30.npy")
 
         # Update epoch
         self.epoch += 1
