@@ -136,8 +136,8 @@ class StyleGan2(tf.keras.Model):
             loss_real = (self.wasserstein_loss(real_labels, pred_real[0])
                              + self.lambda_t(self.epoch) * self.CategoricalCrossentropy(one_hot_labels, pred_fake[1]))
 
-            loss_fake_grad = (self.wasserstein_loss(real_labels, pred_fake_grad[0])
-                             + self.lambda_t(self.epoch) * self.CategoricalCrossentropy(one_hot_labels, pred_fake[1]))
+            loss_fake_grad = self.wasserstein_loss(real_labels, pred_fake_grad[0])
+                             # + self.lambda_t(self.epoch) * self.CategoricalCrossentropy(one_hot_labels, pred_fake[1]))
 
 
             # gradient penalty
@@ -145,12 +145,12 @@ class StyleGan2(tf.keras.Model):
             gradient_penalty = self.loss_weights["gradient_penalty"] * self.gradient_loss(gradients_fake)
 
             # drift loss
-            # new_pred_fake = pred_fake[0] + self.lambda_t(self.epoch) * pred_fake[1]
-            # new_pred_real = pred_real[0] + self.lambda_t(self.epoch) * pred_real[1]
-            # all_pred = tf.concat([new_pred_fake, new_pred_real], axis=0)
-            # drift_loss = self.loss_weights["drift"] * tf.reduce_mean(all_pred ** 2)
+            new_pred_fake = pred_fake[0] #+ self.lambda_t(self.epoch) * pred_fake[1]
+            new_pred_real = pred_real[0] #+ self.lambda_t(self.epoch) * pred_real[1]
+            all_pred = tf.concat([new_pred_fake, new_pred_real], axis=0)
+            drift_loss = self.loss_weights["drift"] * tf.reduce_mean(all_pred ** 2)
 
-            d_loss = loss_fake + loss_real + gradient_penalty #+ drift_loss
+            d_loss = loss_fake + loss_real + gradient_penalty + drift_loss
 
             gradients = total_tape.gradient(d_loss, self.discriminator.trainable_weights)
             self.d_optimizer.apply_gradients(zip(gradients, self.discriminator.trainable_weights))
