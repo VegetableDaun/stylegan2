@@ -125,7 +125,8 @@ class StyleGan2Discriminator(tf.keras.layers.Layer):
 
         # conditional output layers
         output = self.dense_output_c(x)
-        x_c = tf.reduce_sum(tf.multiply(output, c), axis=1, keepdims=True)
+        # x_c = tf.reduce_sum(tf.multiply(output, c), axis=1, keepdims=True)
+        x_c = tf.nn.softmax(output)
 
         return [tf.identity(x_uc, name='scores_out_uc'), tf.identity(x_c, name='scores_out_c')]
 
