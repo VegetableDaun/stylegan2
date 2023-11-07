@@ -59,7 +59,6 @@ class MappingNetwork(tf.keras.layers.Layer):
             x_c = getattr(self, 'Conditional_Dense{}'.format(i))(x_c)
             x_c = tf.math.multiply(tf.nn.leaky_relu(x_c, 0.2), tf.math.sqrt(2.))
 
-
         x = x_un + lambda_t * x_c
 
         # Broadcasting

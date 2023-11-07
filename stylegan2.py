@@ -111,7 +111,7 @@ class StyleGan2(tf.keras.Model):
             fake_images = self.generator(noise, lambda_t=self.lambda_t(self.epoch), c=one_hot_labels)
             pred_fake = self.discriminator(fake_images, c=one_hot_labels)
             g_loss = (self.wasserstein_loss(real_labels, pred_fake[0])
-                      + self.lambda_t(self.epoch) * self.CategoricalCrossentropy(one_hot_labels, pred_fake[1]))
+                      - self.lambda_t(self.epoch) * self.CategoricalCrossentropy(one_hot_labels, pred_fake[1]))
 
             trainable_weights = (self.generator.mapping_network.trainable_weights
                                  + self.generator.synthesis_network.trainable_weights)
@@ -131,10 +131,10 @@ class StyleGan2(tf.keras.Model):
 
             # calculate losses
             loss_fake = (self.wasserstein_loss(fake_labels, pred_fake[0])
-                             + self.lambda_t(self.epoch) * self.CategoricalCrossentropy(one_hot_labels, pred_fake[1]))
+                             - self.lambda_t(self.epoch) * self.CategoricalCrossentropy(one_hot_labels, pred_fake[1]))
 
             loss_real = (self.wasserstein_loss(real_labels, pred_real[0])
-                             + self.lambda_t(self.epoch) * self.CategoricalCrossentropy(one_hot_labels, pred_fake[1]))
+                             - self.lambda_t(self.epoch) * self.CategoricalCrossentropy(one_hot_labels, pred_fake[1]))
 
             loss_fake_grad = self.wasserstein_loss(real_labels, pred_fake_grad[0])
                              # + self.lambda_t(self.epoch) * self.CategoricalCrossentropy(one_hot_labels, pred_fake[1]))
