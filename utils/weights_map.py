@@ -11,14 +11,7 @@ mapping_weights = ['Generator/Mapping_network/Dense0/weight', 'Generator/Mapping
                    'Generator/Mapping_network/Dense5/weight', 'Generator/Mapping_network/Dense5/bias',
                    'Generator/Mapping_network/Dense6/weight', 'Generator/Mapping_network/Dense6/bias',
                    'Generator/Mapping_network/Dense7/weight', 'Generator/Mapping_network/Dense7/bias',
-                   'Generator/Mapping_network/Conditional_Dense0/weight', 'Generator/Mapping_network/Conditional_Dense0/bias',
-                   'Generator/Mapping_network/Conditional_Dense1/weight', 'Generator/Mapping_network/Conditional_Dense1/bias',
-                   'Generator/Mapping_network/Conditional_Dense2/weight', 'Generator/Mapping_network/Conditional_Dense2/bias',
-                   'Generator/Mapping_network/Conditional_Dense3/weight', 'Generator/Mapping_network/Conditional_Dense3/bias',
-                   'Generator/Mapping_network/Conditional_Dense4/weight', 'Generator/Mapping_network/Conditional_Dense4/bias',
-                   'Generator/Mapping_network/Conditional_Dense5/weight', 'Generator/Mapping_network/Conditional_Dense5/bias',
-                   'Generator/Mapping_network/Conditional_Dense6/weight', 'Generator/Mapping_network/Conditional_Dense6/bias',
-                   'Generator/Mapping_network/Conditional_Dense7/weight', 'Generator/Mapping_network/Conditional_Dense7/bias']
+                   'Generator/Mapping_network/Conditional_Dense/weight', 'Generator/Mapping_network/Conditional_Dense/bias']
 
 
 def get_synthesis_name_weights(resolution):

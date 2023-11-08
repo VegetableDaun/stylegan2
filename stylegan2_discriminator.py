@@ -114,19 +114,11 @@ class StyleGan2Discriminator(tf.keras.layers.Layer):
 
         # unconditional output layers
         x_uc = self.dense_output_uc(x)
-        # emb_x = self.dense_output_c_64(x)
-        # emb_x = tf.math.multiply(tf.nn.leaky_relu(emb_x, 0.2), tf.math.sqrt(2.))
-        #
-        # emb_x = self.dense_output_c_32(emb_x)
-        # emb_x = tf.math.multiply(tf.nn.leaky_relu(emb_x, 0.2), tf.math.sqrt(2.))
-        #
-        # emb_x = self.dense_output_c_16(emb_x)
-        # emb_x = tf.math.multiply(tf.nn.leaky_relu(emb_x, 0.2), tf.math.sqrt(2.))
 
         # conditional output layers
         output = self.dense_output_c(x)
-        # x_c = tf.reduce_sum(tf.multiply(output, c), axis=1, keepdims=True)
-        x_c = tf.nn.softmax(output)
+        x_c = tf.reduce_sum(tf.multiply(output, c), axis=1, keepdims=True)
+        # x_c = tf.nn.softmax(output)
 
         return [tf.identity(x_uc, name='scores_out_uc'), tf.identity(x_c, name='scores_out_c')]
 

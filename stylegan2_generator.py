@@ -31,9 +31,11 @@ class MappingNetwork(tf.keras.layers.Layer):
             setattr(self, 'Dense{}'.format(i),
                     DenseLayer(fmaps=128, lrmul=self.lrmul, name='Dense{}'.format(i)))
 
-        for i in range(self.mapping_layers):
-            setattr(self, 'Conditional_Dense{}'.format(i),
-                    DenseLayer(fmaps=128, lrmul=self.lrmul, name='Conditional_Dense{}'.format(i)))
+        # for i in range(self.mapping_layers):
+        #     setattr(self, 'Conditional_Dense{}'.format(i),
+        #             DenseLayer(fmaps=128, lrmul=self.lrmul, name='Conditional_Dense{}'.format(i)))
+
+        self.Conditional_Dense = DenseLayer(fmaps=128, lrmul=self.lrmul, name='Conditional_Dense')
 
         self.g_mapping_broadcast = tf.keras.layers.RepeatVector(self.dlatent_vector)
 
@@ -46,20 +48,19 @@ class MappingNetwork(tf.keras.layers.Layer):
 
         # Normalize input z
         scale = tf.math.rsqrt(tf.reduce_mean(tf.square(z), axis=1, keepdims=True) + 1e-8)
-        x_un = tf.math.multiply(z, scale)
+        x = tf.math.multiply(z, scale)
+
+        # Conditional
+        x_c = self.Conditional_Dense(c)
+        x_c = tf.math.multiply(tf.nn.leaky_relu(x_c, 0.2), tf.math.sqrt(2.))
 
         # Mapping
         for i in range(self.mapping_layers):
-            x_un = getattr(self, 'Dense{}'.format(i))(x_un)
-            x_un = tf.math.multiply(tf.nn.leaky_relu(x_un, 0.2), tf.math.sqrt(2.))
+            x = getattr(self, 'Dense{}'.format(i))(x)
+            x = tf.math.multiply(tf.nn.leaky_relu(x, 0.2), tf.math.sqrt(2.))
 
-        # Conditional
-        x_c = getattr(self, 'Conditional_Dense0')(c)
-        for i in range(1, self.mapping_layers):
-            x_c = getattr(self, 'Conditional_Dense{}'.format(i))(x_c)
-            x_c = tf.math.multiply(tf.nn.leaky_relu(x_c, 0.2), tf.math.sqrt(2.))
-
-        x = x_un + lambda_t * x_c
+            if i == 0:
+                x += lambda_t * x_c
 
         # Broadcasting
         dlatents = self.g_mapping_broadcast(x)
