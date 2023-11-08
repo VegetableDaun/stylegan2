@@ -129,7 +129,7 @@ class StyleGan2(tf.keras.Model):
 
             # calculate losses
             loss_fake = (self.wasserstein_loss(fake_labels, pred_fake[0])
-                             + self.lambda_t(self.epoch) * self.wasserstein_loss(real_labels, pred_fake[1]))
+                             + self.lambda_t(self.epoch) * self.wasserstein_loss(fake_labels, pred_fake[1])) # was real_labels
 
             loss_real = (self.wasserstein_loss(real_labels, pred_real[0])
                              + self.lambda_t(self.epoch) * self.wasserstein_loss(real_labels, pred_fake[1]))
