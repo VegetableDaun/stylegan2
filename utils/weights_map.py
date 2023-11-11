@@ -15,19 +15,19 @@ mapping_weights = ['Mapping_network/Dense0/weight', 'Mapping_network/Dense0/bias
 
 
 def get_synthesis_name_weights(resolution):
-    synthesis_weights = ['Generator/Synthesis_network/4x4/Const/const',
-                         'Generator/Synthesis_network/4x4/Conv1/noise_strength',
-                         'Generator/Synthesis_network/4x4/Conv1/bias',
-                         'Generator/Synthesis_network/4x4/Conv1/mod_bias',
-                         'Generator/Synthesis_network/4x4/Conv1/mod_weight',
-                         'Generator/Synthesis_network/4x4/Conv1/weight',
-                         'Generator/Synthesis_network/4x4/ToRGB/bias',
-                         'Generator/Synthesis_network/4x4/ToRGB/mod_bias',
-                         'Generator/Synthesis_network/4x4/ToRGB/mod_weight',
-                         'Generator/Synthesis_network/4x4/ToRGB/weight']
+    synthesis_weights = ['Synthesis_network/4x4/Const/const',
+                         'Synthesis_network/4x4/Conv1/noise_strength',
+                         'Synthesis_network/4x4/Conv1/bias',
+                         'Synthesis_network/4x4/Conv1/mod_bias',
+                         'Synthesis_network/4x4/Conv1/mod_weight',
+                         'Synthesis_network/4x4/Conv1/weight',
+                         'Synthesis_network/4x4/ToRGB/bias',
+                         'Synthesis_network/4x4/ToRGB/mod_bias',
+                         'Synthesis_network/4x4/ToRGB/mod_weight',
+                         'Synthesis_network/4x4/ToRGB/weight']
 
     for res in range(3, int(np.log2(resolution)) + 1):
-        name = 'Generator/Synthesis_network/{}x{}/'.format(2 ** res, 2 ** res)
+        name = 'Synthesis_network/{}x{}/'.format(2 ** res, 2 ** res)
         for up in ['Conv0_up/', 'Conv1/', 'ToRGB/']:
             for var in ['noise_strength', 'bias', 'mod_bias', 'mod_weight', 'weight']:
                 if up == 'ToRGB/' and var == 'noise_strength':
@@ -174,31 +174,31 @@ discriminator_weights_256 = ['disc_4x4/Conv/bias',
                              'disc_Output/weight',
                              'disc_Output/bias']
 
-discriminator_weights_32 = ['Discriminator/4x4/Conv/bias',
-                            'Discriminator/32x32/FromRGB/bias',
-                            'Discriminator/32x32/FromRGB/weight',
-                            'Discriminator/32x32/Conv0/bias',
-                            'Discriminator/32x32/Conv1_down/bias',
-                            'Discriminator/32x32/Conv0/weight',
-                            'Discriminator/32x32/Conv1_down/weight',
-                            'Discriminator/32x32/Skip/weight',
-                            'Discriminator/16x16/Conv0/bias',
-                            'Discriminator/16x16/Conv1_down/bias',
-                            'Discriminator/16x16/Conv0/weight',
-                            'Discriminator/16x16/Conv1_down/weight',
-                            'Discriminator/16x16/Skip/weight',
-                            'Discriminator/8x8/Conv0/bias',
-                            'Discriminator/8x8/Conv1_down/bias',
-                            'Discriminator/8x8/Conv0/weight',
-                            'Discriminator/8x8/Conv1_down/weight',
-                            'Discriminator/8x8/Skip/weight',
-                            'Discriminator/4x4/Conv/weight',
-                            'Discriminator/4x4/Dense0/weight',
-                            'Discriminator/4x4/Dense0/bias',
-                            'Discriminator/Output_c/weight',
-                            'Discriminator/Output_c/bias',
-                            'Discriminator/Output_uc/weight',
-                            'Discriminator/Output_uc/bias']
+discriminator_weights_32 = ['4x4/Conv/bias',
+                            '32x32/FromRGB/bias',
+                            '32x32/FromRGB/weight',
+                            '32x32/Conv0/bias',
+                            '32x32/Conv1_down/bias',
+                            '32x32/Conv0/weight',
+                            '32x32/Conv1_down/weight',
+                            '32x32/Skip/weight',
+                            '16x16/Conv0/bias',
+                            '16x16/Conv1_down/bias',
+                            '16x16/Conv0/weight',
+                            '16x16/Conv1_down/weight',
+                            '16x16/Skip/weight',
+                            '8x8/Conv0/bias',
+                            '8x8/Conv1_down/bias',
+                            '8x8/Conv0/weight',
+                            '8x8/Conv1_down/weight',
+                            '8x8/Skip/weight',
+                            '4x4/Conv/weight',
+                            '4x4/Dense0/weight',
+                            '4x4/Dense0/bias',
+                            'Output_c/weight',
+                            'Output_c/bias',
+                            'Output_uc/weight',
+                            'Output_uc/bias']
 
 synthesis_weights = {
     'ffhq': synthesis_weights_1024,
