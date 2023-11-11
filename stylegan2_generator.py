@@ -277,17 +277,6 @@ class StyleGan2Generator(tf.keras.layers.Layer):
         """
         _ = self(tf.zeros(shape=(1, 128)), lambda_t=1, c=tf.zeros(shape=(1, num_classes)))
 
-        # try:
-        #     data = np.load(path_to_weights, allow_pickle=True)[()]
-        #
-        #     weights_mapping = [data.get(key) for key in mapping_weights]
-        #     weights_synthesis = [data.get(key) for key in synthesis_weights[self.resolution]]
-        #
-        #     self.mapping_network.set_weights(weights_mapping)
-        #     self.synthesis_network.set_weights(weights_synthesis)
-        # except Exception('Wrong file weight!'):
-        #     pass
-
         data = np.load(path_to_weights, allow_pickle=True)[()]
 
         weights_mapping = [data.get(key) for key in mapping_weights]
