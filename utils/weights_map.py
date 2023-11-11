@@ -3,15 +3,15 @@ import numpy as np
 available_weights = ['ffhq', 'car', 'cat', 'church', 'horse', 'MNIST']
 weights_stylegan2_dir = 'weights/'
 
-mapping_weights = ['Generator/Mapping_network/Dense0/weight', 'Generator/Mapping_network/Dense0/bias',
-                   'Generator/Mapping_network/Dense1/weight', 'Generator/Mapping_network/Dense1/bias',
-                   'Generator/Mapping_network/Dense2/weight', 'Generator/Mapping_network/Dense2/bias',
-                   'Generator/Mapping_network/Dense3/weight', 'Generator/Mapping_network/Dense3/bias',
-                   'Generator/Mapping_network/Dense4/weight', 'Generator/Mapping_network/Dense4/bias',
-                   'Generator/Mapping_network/Dense5/weight', 'Generator/Mapping_network/Dense5/bias',
-                   'Generator/Mapping_network/Dense6/weight', 'Generator/Mapping_network/Dense6/bias',
-                   'Generator/Mapping_network/Dense7/weight', 'Generator/Mapping_network/Dense7/bias',
-                   'Generator/Mapping_network/Conditional_Dense/weight', 'Generator/Mapping_network/Conditional_Dense/bias']
+mapping_weights = ['Mapping_network/Dense0/weight', 'Mapping_network/Dense0/bias',
+                   'Mapping_network/Dense1/weight', 'Mapping_network/Dense1/bias',
+                   'Mapping_network/Dense2/weight', 'Mapping_network/Dense2/bias',
+                   'Mapping_network/Dense3/weight', 'Mapping_network/Dense3/bias',
+                   'Mapping_network/Dense4/weight', 'Mapping_network/Dense4/bias',
+                   'Mapping_network/Dense5/weight', 'Mapping_network/Dense5/bias',
+                   'Mapping_network/Dense6/weight', 'Mapping_network/Dense6/bias',
+                   'Mapping_network/Dense7/weight', 'Mapping_network/Dense7/bias',
+                   'Mapping_network/Conditional_Dense/weight', 'Mapping_network/Conditional_Dense/bias']
 
 
 def get_synthesis_name_weights(resolution):
