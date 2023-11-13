@@ -65,7 +65,7 @@ class StyleGan2(tf.keras.Model):
     def metrics(self):
         return [self.d_loss_metric, self.g_loss_metric]
 
-    def compile(self, d_optimizer, g_optimizer, T_s, T_e, epoch=1, *args, **kwargs):
+    def compile(self, d_optimizer, g_optimizer, T_s, T_e, epoch=0, *args, **kwargs):
         self.loss_weights = kwargs.pop("loss_weights", self.loss_weights)
         self.d_optimizer = d_optimizer
         self.g_optimizer = g_optimizer
