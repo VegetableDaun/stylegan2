@@ -79,8 +79,9 @@ class StyleGan2(tf.keras.Model):
 
         super().compile(*args, **kwargs)
 
-    def lambda_t(self, epoch):
-        return min([max([(epoch - self.T_s) / (self.T_e - self.T_s), 0]), 1])
+    @property
+    def lambda_t(self):
+        return min([max([(self.epoch - self.T_s) / (self.T_e - self.T_s), 0]), 1])
 
     @staticmethod
     def wasserstein_loss(y_true, y_pred):
@@ -106,11 +107,11 @@ class StyleGan2(tf.keras.Model):
 
         # generator
         with tf.GradientTape() as g_tape:
-            fake_images = self.generator(noise, lambda_t=self.lambda_t(self.epoch), c=one_hot_labels)
+            fake_images = self.generator(noise, lambda_t=self.lambda_t, c=one_hot_labels)
             pred_fake = self.discriminator(fake_images, c=one_hot_labels)
             g_loss = (self.wasserstein_loss(real_labels, pred_fake[0])
-                      + self.lambda_t(self.epoch) * self.wasserstein_loss(real_labels, pred_fake[1]))
-                      # + self.lambda_t(self.epoch) * self.wasserstein_loss(fake_labels, pred_fake[2]))
+                      + self.lambda_t * self.wasserstein_loss(real_labels, pred_fake[1]))
+            # + self.lambda_t(self.epoch) * self.wasserstein_loss(fake_labels, pred_fake[2]))
 
             trainable_weights = (self.generator.mapping_network.trainable_weights
                                  + self.generator.synthesis_network.trainable_weights)
@@ -130,24 +131,24 @@ class StyleGan2(tf.keras.Model):
 
             # calculate losses
             loss_fake = (self.wasserstein_loss(fake_labels, pred_fake[0])
-                         + self.lambda_t(self.epoch) * self.wasserstein_loss(fake_labels, pred_fake[1]))
-                         # + self.lambda_t(self.epoch) * self.wasserstein_loss(fake_labels, pred_fake[2]))
+                         + self.lambda_t * self.wasserstein_loss(fake_labels, pred_fake[1]))
+            # + self.lambda_t(self.epoch) * self.wasserstein_loss(fake_labels, pred_fake[2]))
 
             loss_real = (self.wasserstein_loss(real_labels, pred_real[0])
-                         + self.lambda_t(self.epoch) * self.wasserstein_loss(real_labels, pred_real[1]))
-                         # + self.lambda_t(self.epoch) * self.wasserstein_loss(fake_labels, pred_real[2]))
+                         + self.lambda_t * self.wasserstein_loss(real_labels, pred_real[1]))
+            # + self.lambda_t(self.epoch) * self.wasserstein_loss(fake_labels, pred_real[2]))
 
             loss_fake_grad = (self.wasserstein_loss(real_labels, pred_fake_grad[0])
-                              + self.lambda_t(self.epoch) * self.wasserstein_loss(real_labels, pred_fake_grad[1]))
-                              # + self.lambda_t(self.epoch) * self.wasserstein_loss(fake_labels, pred_fake_grad[2]))
+                              + self.lambda_t * self.wasserstein_loss(real_labels, pred_fake_grad[1]))
+            # + self.lambda_t(self.epoch) * self.wasserstein_loss(fake_labels, pred_fake_grad[2]))
 
             # gradient penalty
             gradients_fake = gradient_tape.gradient(loss_fake_grad, [interpolates])
             gradient_penalty = self.loss_weights["gradient_penalty"] * self.gradient_loss(gradients_fake)
 
             # drift loss
-            new_pred_fake = pred_fake[0] + self.lambda_t(self.epoch) * pred_fake[1] # + pred_fake[2])
-            new_pred_real = pred_real[0] + self.lambda_t(self.epoch) * pred_real[1] # + pred_real[2])
+            new_pred_fake = pred_fake[0] + self.lambda_t * pred_fake[1]  # + pred_fake[2])
+            new_pred_real = pred_real[0] + self.lambda_t * pred_real[1]  # + pred_real[2])
             all_pred = tf.concat([new_pred_fake, new_pred_real], axis=0)
             drift_loss = self.loss_weights["drift"] * tf.reduce_mean(all_pred ** 2)
 
@@ -155,9 +156,6 @@ class StyleGan2(tf.keras.Model):
 
             gradients = total_tape.gradient(d_loss, self.discriminator.trainable_weights)
             self.d_optimizer.apply_gradients(zip(gradients, self.discriminator.trainable_weights))
-
-        # Update epoch
-        self.epoch += 1
 
         # Update metrics
         self.d_loss_metric.update_state(d_loss)
