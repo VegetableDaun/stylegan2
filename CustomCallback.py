@@ -13,6 +13,11 @@ class CustomCallback_epoch(keras.callbacks.Callback):
     def on_epoch_begin(self, epoch, logs=None):
         self.model.epoch += 1
 
+    def on_epoch_end(self, epoch, logs=None):
+        if self.model.epoch == 30:
+            self.model.generator.save('GEN_30.npy')
+            self.model.discriminator.save('DIS_30.npy')
+
 
 class CustomCallback_save(keras.callbacks.Callback):
     def __init__(self, num_save=5, save_last=True, path=Path(path_to_result), noise=Path(path_to_noise)):
