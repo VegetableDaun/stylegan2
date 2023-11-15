@@ -150,11 +150,11 @@ class StyleGan2(tf.keras.Model):
             all_pred_0 = tf.concat([pred_fake[0], pred_real[0]], axis=0)
             drift_loss_predict = self.loss_weights["drift"] * tf.reduce_mean(all_pred_0 ** 2)
 
-            all_pred_1 = tf.concat([self.lambda_t * pred_fake[1], self.lambda_t * pred_real[1]], axis=0)
-            drift_loss_label = self.loss_weights["drift"] * tf.reduce_mean(all_pred_1 ** 2)
+            all_pred_1 = tf.concat([pred_fake[1], pred_real[1]], axis=0)
+            drift_loss_label = self.lambda_t * self.loss_weights["drift"] * tf.reduce_mean(all_pred_1 ** 2)
 
-            all_pred_2 = tf.concat([self.lambda_t * pred_fake[2], self.lambda_t * pred_real[2]], axis=0)
-            drift_loss_inv_label = self.loss_weights["drift"] * tf.reduce_mean(all_pred_2 ** 2)
+            all_pred_2 = tf.concat([pred_fake[2], pred_real[2]], axis=0)
+            drift_loss_inv_label = self.lambda_t * self.loss_weights["drift"] * tf.reduce_mean(all_pred_2 ** 2)
 
             d_loss = loss_fake + loss_real + gradient_penalty + drift_loss_predict + drift_loss_label + drift_loss_inv_label
 
