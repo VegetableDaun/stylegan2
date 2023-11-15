@@ -50,16 +50,15 @@ class MappingNetwork(tf.keras.layers.Layer):
         scale = tf.math.rsqrt(tf.reduce_mean(tf.square(z), axis=1, keepdims=True) + 1e-8)
         x = tf.math.multiply(z, scale)
 
-        # Conditional
-        x_c = self.Conditional_Dense(c)
-        x_c = tf.math.multiply(tf.nn.leaky_relu(x_c, 0.2), tf.math.sqrt(2.))
-
         # Mapping
         for i in range(self.mapping_layers):
             x = getattr(self, 'Dense{}'.format(i))(x)
             x = tf.math.multiply(tf.nn.leaky_relu(x, 0.2), tf.math.sqrt(2.))
 
+            # Conditional
             if i == 0:
+                x_c = self.Conditional_Dense(c)
+                x_c = tf.math.multiply(tf.nn.leaky_relu(x_c, 0.2), tf.math.sqrt(2.))
                 x += lambda_t * x_c
 
         # Broadcasting

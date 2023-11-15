@@ -92,7 +92,6 @@ class StyleGan2Discriminator(tf.keras.layers.Layer):
 
         y = tf.cast(y, 'float32')
         c = tf.cast(c, 'float32')
-        inv_c = tf.ones(shape=()) - c
         x = None
 
         for res in range(self.resolution_log2, 2, -1):
@@ -113,19 +112,15 @@ class StyleGan2Discriminator(tf.keras.layers.Layer):
         x = self.dense_4_4(x)
         x = tf.math.multiply(tf.nn.leaky_relu(x, 0.2), tf.math.sqrt(2.))
 
-        # unconditional output layers
+        # unconditional output layer
         x_uc = self.dense_output_uc(x)
 
-        # conditional output layers
+        # conditional output layer
         output = self.dense_output_c(x)
-
         x_c = tf.reduce_sum(tf.multiply(output, c), axis=1, keepdims=True)
-        inv_x_c = tf.reduce_sum(tf.multiply(output, inv_c), axis=1, keepdims=True) / (num_classes - 1)
-        # x_c = tf.nn.softmax(output)
 
-        return [tf.identity(x_uc, name='scores_out_uc'),
-                tf.identity(x_c, name='scores_out_c'),
-                tf.identity(inv_x_c, name='scores_out_inv_c')]
+        return [tf.identity(x_uc, name='score_uc'),
+                tf.identity(x_c, name='score_c')]
 
     def __adjust_resolution(self, weights_name):
         """
