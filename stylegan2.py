@@ -144,12 +144,12 @@ class StyleGan2(tf.keras.Model):
 
             # gradient penalty
             gradients_fake_0 = gradient_tape.gradient(loss_grad_0, [interpolates])
-            gradients_fake_1 = gradient_tape.gradient(loss_grad_1, [interpolates])
-            gradients_fake_2 = gradient_tape.gradient(loss_grad_2, [interpolates])
+            # gradients_fake_1 = gradient_tape.gradient(loss_grad_1, [interpolates])
+            # gradients_fake_2 = gradient_tape.gradient(loss_grad_2, [interpolates])
 
-            gradient_penalty = (self.gradient_loss(gradients_fake_0)
-                                + self.lambda_t * self.gradient_loss(gradients_fake_1)
-                                + self.lambda_t * self.gradient_loss(gradients_fake_2))
+            gradient_penalty = self.gradient_loss(gradients_fake_0)
+                                # + self.lambda_t * self.gradient_loss(gradients_fake_1)
+                                # + self.lambda_t * self.gradient_loss(gradients_fake_2))
             gradient_penalty = self.loss_weights["gradient_penalty"] * gradient_penalty
 
             # drift loss
