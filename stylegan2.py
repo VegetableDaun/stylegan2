@@ -138,13 +138,19 @@ class StyleGan2(tf.keras.Model):
                          + self.lambda_t * self.wasserstein_loss(real_labels, pred_real[1])
             + self.lambda_t * self.wasserstein_loss(fake_labels, pred_real[2]))
 
-            loss_fake_grad = (self.wasserstein_loss(real_labels, pred_fake_grad[0])
-                              + self.lambda_t * self.wasserstein_loss(real_labels, pred_fake_grad[1])
-            + self.lambda_t * self.wasserstein_loss(fake_labels, pred_fake_grad[2]))
+            loss_grad_0 = self.wasserstein_loss(real_labels, pred_fake_grad[0])
+            loss_grad_1 = self.wasserstein_loss(real_labels, pred_fake_grad[1])
+            loss_grad_2 = self.wasserstein_loss(fake_labels, pred_fake_grad[2])
 
             # gradient penalty
-            gradients_fake = gradient_tape.gradient(loss_fake_grad, [interpolates])
-            gradient_penalty = self.loss_weights["gradient_penalty"] * self.gradient_loss(gradients_fake)
+            gradients_fake_0 = gradient_tape.gradient(loss_grad_0, [interpolates])
+            gradients_fake_1 = gradient_tape.gradient(loss_grad_1, [interpolates])
+            gradients_fake_2 = gradient_tape.gradient(loss_grad_2, [interpolates])
+
+            gradient_penalty = (self.gradient_loss(gradients_fake_0)
+                                + self.lambda_t * self.gradient_loss(gradients_fake_1)
+                                + self.lambda_t * self.gradient_loss(gradients_fake_2))
+            gradient_penalty = self.loss_weights["gradient_penalty"] * gradient_penalty
 
             # drift loss
             all_pred_0 = tf.concat([pred_fake[0], pred_real[0]], axis=0)
