@@ -110,8 +110,7 @@ class StyleGan2(tf.keras.Model):
             fake_images = self.generator(noise, lambda_t=self.lambda_t, c=one_hot_labels)
             pred_fake = self.discriminator(fake_images, c=one_hot_labels)
             g_loss = (self.wasserstein_loss(real_labels, pred_fake[0])
-                      + self.lambda_t * self.wasserstein_loss(real_labels, pred_fake[1])
-            + self.lambda_t * self.wasserstein_loss(fake_labels, pred_fake[2]))
+                      + self.lambda_t * self.wasserstein_loss(real_labels, pred_fake[1]))
 
             trainable_weights = (self.generator.mapping_network.trainable_weights
                                  + self.generator.synthesis_network.trainable_weights)
@@ -131,38 +130,30 @@ class StyleGan2(tf.keras.Model):
 
             # calculate losses
             loss_fake = (self.wasserstein_loss(fake_labels, pred_fake[0])
-                         + self.lambda_t * self.wasserstein_loss(fake_labels, pred_fake[1])
-            + self.lambda_t * self.wasserstein_loss(real_labels, pred_fake[2]))
+                         + self.lambda_t * self.wasserstein_loss(fake_labels, pred_fake[1]))
 
             loss_real = (self.wasserstein_loss(real_labels, pred_real[0])
-                         + self.lambda_t * self.wasserstein_loss(real_labels, pred_real[1])
-            + self.lambda_t * self.wasserstein_loss(fake_labels, pred_real[2]))
+                         + self.lambda_t * self.wasserstein_loss(real_labels, pred_real[1]))
 
-            loss_grad_0 = self.wasserstein_loss(real_labels, pred_fake_grad[0])
-            loss_grad_1 = self.wasserstein_loss(real_labels, pred_fake_grad[1])
-            loss_grad_2 = self.wasserstein_loss(fake_labels, pred_fake_grad[2])
+            loss_grad = self.wasserstein_loss(real_labels, pred_fake_grad[0])
+            # loss_grad_1 = self.wasserstein_loss(real_labels, pred_fake_grad[1])
 
             # gradient penalty
-            gradients_fake_0 = gradient_tape.gradient(loss_grad_0, [interpolates])
+            # gradients_fake_0 = gradient_tape.gradient(loss_grad, [interpolates])
             # gradients_fake_1 = gradient_tape.gradient(loss_grad_1, [interpolates])
-            # gradients_fake_2 = gradient_tape.gradient(loss_grad_2, [interpolates])
 
-            gradient_penalty = self.gradient_loss(gradients_fake_0)
+            # gradient_penalty = self.gradient_loss(gradients_fake_0)
                                 # + self.lambda_t * self.gradient_loss(gradients_fake_1)
-                                # + self.lambda_t * self.gradient_loss(gradients_fake_2))
-            gradient_penalty = self.loss_weights["gradient_penalty"] * gradient_penalty
+            # gradient_penalty = self.loss_weights["gradient_penalty"] * gradient_penalty
 
             # drift loss
             all_pred_0 = tf.concat([pred_fake[0], pred_real[0]], axis=0)
-            drift_loss_predict = self.loss_weights["drift"] * tf.reduce_mean(all_pred_0 ** 2)
+            drift_loss_0 = self.loss_weights["drift"] * tf.reduce_mean(all_pred_0 ** 2)
 
             all_pred_1 = tf.concat([pred_fake[1], pred_real[1]], axis=0)
-            drift_loss_label = self.lambda_t * self.loss_weights["drift"] * tf.reduce_mean(all_pred_1 ** 2)
+            drift_loss_1 = self.lambda_t * self.loss_weights["drift"] * tf.reduce_mean(all_pred_1 ** 2)
 
-            all_pred_2 = tf.concat([pred_fake[2], pred_real[2]], axis=0)
-            drift_loss_inv_label = self.lambda_t * self.loss_weights["drift"] * tf.reduce_mean(all_pred_2 ** 2)
-
-            d_loss = loss_fake + loss_real + gradient_penalty + drift_loss_predict + drift_loss_label + drift_loss_inv_label
+            d_loss = loss_fake + loss_real + drift_loss_0 + drift_loss_1 # + gradient_penalty
 
             gradients = total_tape.gradient(d_loss, self.discriminator.trainable_weights)
             self.d_optimizer.apply_gradients(zip(gradients, self.discriminator.trainable_weights))
