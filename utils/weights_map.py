@@ -4,17 +4,17 @@ available_weights = ['ffhq', 'car', 'cat', 'church', 'horse', 'MNIST']
 weights_stylegan2_dir = 'weights/'
 
 mapping_weights = ['Mapping_network/Dense0/weight', 'Mapping_network/Dense0/bias',
+                   'Mapping_network/Conditional_Dense/weight_16', 'Mapping_network/Conditional_Dense/bias_16',
+                   'Mapping_network/Conditional_Dense/weight_32', 'Mapping_network/Conditional_Dense/bias_32',
+                   'Mapping_network/Conditional_Dense/weight_64', 'Mapping_network/Conditional_Dense/bias_64',
+                   'Mapping_network/Conditional_Dense/weight_128', 'Mapping_network/Conditional_Dense/bias_128',
                    'Mapping_network/Dense1/weight', 'Mapping_network/Dense1/bias',
                    'Mapping_network/Dense2/weight', 'Mapping_network/Dense2/bias',
                    'Mapping_network/Dense3/weight', 'Mapping_network/Dense3/bias',
                    'Mapping_network/Dense4/weight', 'Mapping_network/Dense4/bias',
                    'Mapping_network/Dense5/weight', 'Mapping_network/Dense5/bias',
                    'Mapping_network/Dense6/weight', 'Mapping_network/Dense6/bias',
-                   'Mapping_network/Dense7/weight', 'Mapping_network/Dense7/bias',
-                   'Mapping_network/Conditional_Dense/weight_16', 'Mapping_network/Conditional_Dense/bias_16',
-                   'Mapping_network/Conditional_Dense/weight_32', 'Mapping_network/Conditional_Dense/bias_32',
-                   'Mapping_network/Conditional_Dense/weight_64', 'Mapping_network/Conditional_Dense/bias_64',
-                   'Mapping_network/Conditional_Dense/weight_128', 'Mapping_network/Conditional_Dense/bias_128']
+                   'Mapping_network/Dense7/weight', 'Mapping_network/Dense7/bias']
 
 
 def get_synthesis_name_weights(resolution):
