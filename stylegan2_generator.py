@@ -42,7 +42,7 @@ class MappingNetwork(tf.keras.layers.Layer):
 
         self.g_mapping_broadcast = tf.keras.layers.RepeatVector(self.dlatent_vector)
 
-    def call(self, z, lambda_t=0, c=None):
+    def call(self, z, lambda_t=1, c=None):
 
         assert c is not None, "Use conditional"
 
@@ -192,7 +192,7 @@ class StyleGan2Generator(tf.keras.layers.Layer):
             _ = self(tf.zeros(shape=(1, 128)), lambda_t=1, c=tf.zeros(shape=(1, num_classes)))
             self.__load_weights(weights)
 
-    def call(self, z, lambda_t=0, c=None):
+    def call(self, z, lambda_t=1, c=None):
         """
 
         Parameters
