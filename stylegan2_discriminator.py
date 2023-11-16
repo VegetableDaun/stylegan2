@@ -72,7 +72,7 @@ class StyleGan2Discriminator(tf.keras.layers.Layer):
         # self.dense_output_c_16 = DenseLayer(fmaps=16, name='Output_c_16')
         # self.dense_output_c_10 = DenseLayer(fmaps=num_classes, name='Output_c')
 
-        self.dense_output_c = DenseLayer(fmaps=10, name='Output_c')
+        self.dense_output_c = DenseLayer(fmaps=num_classes, name='Output_c')
         self.dense_output_uc = DenseLayer(fmaps=1, name='Output_uc')
 
     def call(self, y, c=None):
@@ -119,8 +119,7 @@ class StyleGan2Discriminator(tf.keras.layers.Layer):
         output = self.dense_output_c(x)
         x_c = tf.reduce_sum(tf.multiply(output, c), axis=1, keepdims=True)
 
-        return [tf.identity(x_uc, name='score_uc'),
-                tf.identity(x_c, name='score_c')]
+        return tf.identity(x_uc, name='score_uc'), tf.identity(x_c, name='score_c')
 
     def __adjust_resolution(self, weights_name):
         """

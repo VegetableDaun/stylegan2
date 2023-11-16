@@ -151,7 +151,7 @@ class StyleGan2(tf.keras.Model):
             drift_loss_0 = self.loss_weights["drift"] * tf.reduce_mean(all_pred_0 ** 2)
 
             all_pred_1 = tf.concat([pred_fake[1], pred_real[1]], axis=0)
-            drift_loss_1 = self.lambda_t * self.loss_weights["drift"] * tf.reduce_mean(all_pred_1 ** 2)
+            drift_loss_1 = self.loss_weights["drift"] * tf.reduce_mean(all_pred_1 ** 2)
 
             d_loss = loss_fake + loss_real + drift_loss_0 + drift_loss_1 # + gradient_penalty
 
