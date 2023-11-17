@@ -188,7 +188,7 @@ class StyleGan2(tf.keras.Model):
 
     def load_optimizer_weights(self, d_weights, g_weights):
 
-        data_0 = (tf.zeros(shape=(4, 3, self.resolution, self.resolution)), tf.zeros(shape=(4, num_classes)))
+        data_0 = (tf.zeros(shape=(4, self.resolution, self.resolution, 3)), tf.zeros(shape=(4, num_classes)))
         self.train_step(data_0)
 
         self.d_optimizer.set_weights(np.load(d_weights, allow_pickle=True))
