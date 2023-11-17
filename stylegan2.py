@@ -1,7 +1,9 @@
 import keras
+import numpy as np
 import tensorflow as tf
 
 from config_GAN import latent_dim
+from config_GAN import num_classes
 from stylegan2_discriminator import StyleGan2Discriminator
 from stylegan2_generator import StyleGan2Generator
 
@@ -143,7 +145,7 @@ class StyleGan2(tf.keras.Model):
             # gradients_fake_1 = gradient_tape.gradient(loss_grad_1, [interpolates])
 
             gradient_penalty = self.gradient_loss(gradients_fake)
-                                # + self.lambda_t * self.gradient_loss(gradients_fake_1)
+            # + self.lambda_t * self.gradient_loss(gradients_fake_1)
             # gradient_penalty = self.loss_weights["gradient_penalty"] * gradient_penalty
 
             # drift loss
@@ -183,3 +185,11 @@ class StyleGan2(tf.keras.Model):
             self.resolution = 256
         elif weights_name in ['MNIST']:
             self.resolution = 32
+
+    def load_optimizer_weights(self, d_weights, g_weights):
+
+        data_0 = (tf.zeros(shape=(4, 3, self.resolution, self.resolution)), tf.zeros(shape=(4, num_classes)))
+        self.train_step(data_0)
+
+        self.d_optimizer.set_weights(np.load(d_weights, allow_pickle=True))
+        self.g_optimizer.set_weights(np.load(g_weights, allow_pickle=True))
