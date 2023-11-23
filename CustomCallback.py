@@ -14,9 +14,30 @@ class CustomCallback_epoch(keras.callbacks.Callback):
         self.model.epoch += 1
 
     def on_epoch_end(self, epoch, logs=None):
-        if self.model.epoch == 30:
-            self.model.generator.save('GEN_30.npy')
-            self.model.discriminator.save('DIS_30.npy')
+        opt_cfg = {"learning_rate": 1e-3, "beta_1": 0.0, "beta_2": 0.99, "epsilon": 1e-8}
+        #
+        # self.model.compile(d_optimizer=tf.keras.optimizers.legacy.Adam(**opt_cfg),
+        #                    g_optimizer=tf.keras.optimizers.legacy.Adam(**opt_cfg),
+        #                    T_s=30,
+        #                    T_e=70,
+        #                    epoch=self.model.epoch
+        #                    )
+
+        if self.model.epoch == 30 or self.model.epoch == 70:
+            self.model.generator.save(f'GEN_{epoch}_new.npy')
+            self.model.discriminator.save(f'DIS_{epoch}_new.npy')
+
+            np.save(f'd_{epoch}_new.npy', self.model.d_optimizer.get_weights(), allow_pickle=True)
+            np.save(f'g_{epoch}_new.npy', self.model.g_optimizer.get_weights(), allow_pickle=True)
+
+            dict_d = {}
+            dict_g = {}
+            for i in opt_cfg:
+                dict_d[i] = getattr(self.model.d_optimizer, i)
+                dict_g[i] = getattr(self.model.g_optimizer, i)
+
+            np.save(f'dict_d_{epoch}.npy', dict_d, allow_pickle=True)
+            np.save(f'dict_g_{epoch}.npy', dict_g, allow_pickle=True)
 
 
 class CustomCallback_save(keras.callbacks.Callback):
