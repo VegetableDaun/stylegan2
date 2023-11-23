@@ -11,10 +11,7 @@ mapping_weights = ['Mapping_network/Dense0/weight', 'Mapping_network/Dense0/bias
                    'Mapping_network/Dense5/weight', 'Mapping_network/Dense5/bias',
                    'Mapping_network/Dense6/weight', 'Mapping_network/Dense6/bias',
                    'Mapping_network/Dense7/weight', 'Mapping_network/Dense7/bias',
-                   'Mapping_network/Conditional_Dense_16/weight', 'Mapping_network/Conditional_Dense_16/bias',
-                   'Mapping_network/Conditional_Dense_32/weight', 'Mapping_network/Conditional_Dense_32/bias',
-                   'Mapping_network/Conditional_Dense_64/weight', 'Mapping_network/Conditional_Dense_64/bias',
-                   'Mapping_network/Conditional_Dense_128/weight', 'Mapping_network/Conditional_Dense_128/bias']
+                   'Mapping_network/Conditional_Dense/weight', 'Mapping_network/Conditional_Dense/bias']
 
 
 def get_synthesis_name_weights(resolution):
