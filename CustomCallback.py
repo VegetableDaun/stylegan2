@@ -7,7 +7,7 @@ from PIL import Image
 import tensorflow as tf
 from tensorflow import keras
 
-from config_GAN import path_to_result, path_to_discriminator, path_to_generator
+from config_GAN import path_to_result, path_to_discriminator, path_to_generator, latent_dim
 
 
 class CustomCallback_epoch(keras.callbacks.Callback):
@@ -47,7 +47,7 @@ class CustomCallback_save(keras.callbacks.Callback):
                 self.counter = int(json.load(F))
 
         rnd = np.random.RandomState(666)
-        self.noise = rnd.normal(shape=(10, self.model.latent_dim))
+        self.noise = rnd.normal(shape=(10, latent_dim))
         self.labels = keras.utils.to_categorical(range(10), 10)
     def on_train_begin(self, logs=None):
         if os.path.isfile(self.path / 'metrics.json'):
