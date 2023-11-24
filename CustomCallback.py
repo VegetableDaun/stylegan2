@@ -53,8 +53,8 @@ class CustomCallback_save(keras.callbacks.Callback):
         if os.path.isfile(self.path / 'metrics.json'):
             self.counter -= self.counter % self.num_save
 
-        if self.counter == 0:
-            os.remove(self.path / 'metrics.json')
+            if self.counter == 0:
+                os.remove(self.path / 'metrics.json')
 
     def on_epoch_end(self, epoch, logs=None):
         self.counter += 1
