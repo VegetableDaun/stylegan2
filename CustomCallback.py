@@ -4,9 +4,10 @@ from pathlib import Path
 
 import numpy as np
 from PIL import Image
+import tensorflow as tf
 from tensorflow import keras
 
-from config_GAN import path_to_result, path_to_noise, path_to_discriminator, path_to_generator
+from config_GAN import path_to_result, path_to_discriminator, path_to_generator
 
 
 class CustomCallback_epoch(keras.callbacks.Callback):
@@ -16,12 +17,8 @@ class CustomCallback_epoch(keras.callbacks.Callback):
     def on_epoch_end(self, epoch, logs=None):
         opt_cfg = {"learning_rate": 1e-3, "beta_1": 0.0, "beta_2": 0.99, "epsilon": 1e-8}
 
-        self.model.compile(d_optimizer=keras.optimizers.legacy.Adam(**opt_cfg),
-                           g_optimizer=keras.optimizers.legacy.Adam(**opt_cfg),
-                           T_s=self.model.T_s,
-                           T_e=self.model.T_e,
-                           epoch=self.model.epoch
-                           )
+        self.model.d_optimizer = keras.optimizers.legacy.Adam(**opt_cfg)
+        self.model.g_optimizer = keras.optimizers.legacy.Adam(**opt_cfg)
 
         if self.model.epoch == 30 or self.model.epoch == 70:
             self.model.generator.save(f'GEN_{epoch}_new.npy')
@@ -32,7 +29,7 @@ class CustomCallback_epoch(keras.callbacks.Callback):
 
 
 class CustomCallback_save(keras.callbacks.Callback):
-    def __init__(self, num_save=5, save_last=True, path=Path(path_to_result), noise=Path(path_to_noise)):
+    def __init__(self, num_save=5, save_last=True, path=Path(path_to_result)):
         super(CustomCallback_save, self).__init__()
         self.num_save = num_save
         self.path = path
@@ -49,9 +46,9 @@ class CustomCallback_save(keras.callbacks.Callback):
             with open(self.path / 'data.json', 'r') as F:
                 self.counter = int(json.load(F))
 
-        with open(noise, mode='r') as F:
-            self.noise = np.array(json.load(F))
-
+        rnd = np.random.RandomState(666)
+        self.noise = rnd.normal(shape=(10, self.model.latent_dim))
+        self.labels = keras.utils.to_categorical(range(10), 10)
     def on_train_begin(self, logs=None):
         if os.path.isfile(self.path / 'metrics.json'):
             self.counter -= self.counter % self.num_save
@@ -86,13 +83,14 @@ class CustomCallback_save(keras.callbacks.Callback):
                 self.model.discriminator.save(self.path / path_to_discriminator / f'Discriminator_{self.counter}.hdf5')
                 self.model.generator.save(self.path / path_to_generator / f'Generator_{self.counter}.hdf5')
 
-            img = np.array(self.model.generator(self.noise))[0]
-            img = np.round(img * 255)
-            img = img.astype(np.uint8)
-            if img.shape[2] == 1:
-                img = np.dstack([img, img, img])
-            img = Image.fromarray(img)
-            img.save(self.path / ('Image/Epoch_' + f'{self.counter}.jpg'))
+            img = self.model.generator(self.noise, c=self.labels)
+            img = tf.transpose(img, [0, 2, 3, 1])
+            img = np.array(img)
+            for i in range(np.shape(img)[0]):
+                img_i = np.round(img[i] * 255)
+                img_i = img_i.astype(np.uint8)
+                img_i = Image.fromarray(img_i)
+                img_i.save(self.path / ('Image/Epoch_' + f'{self.counter}_{i}.jpg'))
 
         with open(self.path / 'data.json', 'w') as F:
             json.dump(self.counter, F)

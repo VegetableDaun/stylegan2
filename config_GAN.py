@@ -8,11 +8,8 @@ path_to_duplicate = 'duplicate.json'
 path_to_discriminator = 'Models/Discriminator'
 path_to_generator = 'Models/Generator'
 
-# Path to noise
-path_to_noise = 'noise.json'
-
 # Path to save metrics and image during train
-path_to_result = 'train_models/cGAN'
+path_to_result = 'train_models/STYLEGAN2'
 
 # Count for test and valid
 count_test = 1164
