@@ -16,12 +16,8 @@ class CustomCallback_epoch(keras.callbacks.Callback):
     def on_epoch_end(self, epoch, logs=None):
         opt_cfg = {"learning_rate": 1e-3, "beta_1": 0.0, "beta_2": 0.99, "epsilon": 1e-8}
 
-        self.model.compile(d_optimizer=keras.optimizers.legacy.Adam(**opt_cfg),
-                           g_optimizer=keras.optimizers.legacy.Adam(**opt_cfg),
-                           T_s=self.model.T_s,
-                           T_e=self.model.T_e,
-                           epoch=self.model.epoch
-                           )
+        self.model.d_optimizer = keras.optimizers.legacy.Adam(**opt_cfg)
+        self.model.g_optimizer = keras.optimizers.legacy.Adam(**opt_cfg)
 
         if self.model.epoch == 30 or self.model.epoch == 70:
             self.model.generator.save(f'GEN_{epoch}_new.npy')
