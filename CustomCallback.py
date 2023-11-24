@@ -29,10 +29,10 @@ class CustomCallback_epoch(keras.callbacks.Callback):
 
 
 class CustomCallback_save(keras.callbacks.Callback):
-    def __init__(self, num_save=5, save_last=True, path=Path(path_to_result)):
+    def __init__(self, num_save=5, save_last=True, path=path_to_result):
         super(CustomCallback_save, self).__init__()
         self.num_save = num_save
-        self.path = path
+        self.path = Path(path)
         self.save_last = save_last
 
         try:
