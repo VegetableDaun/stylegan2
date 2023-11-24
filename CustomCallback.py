@@ -47,7 +47,7 @@ class CustomCallback_save(keras.callbacks.Callback):
                 self.counter = int(json.load(F))
 
         rnd = np.random.RandomState(666)
-        self.noise = rnd.normal(shape=(10, latent_dim))
+        self.noise = rnd.normal(size=(10, latent_dim))
         self.labels = keras.utils.to_categorical(range(10), 10)
     def on_train_begin(self, logs=None):
         if os.path.isfile(self.path / 'metrics.json'):
