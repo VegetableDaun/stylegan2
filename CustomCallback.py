@@ -59,7 +59,7 @@ class CustomCallback_save(keras.callbacks.Callback):
             if self.counter == 0:
                 os.remove(self.path / 'metrics.json')
             else:
-                self.model.load_optimizer_weights(self.path / 'opt' / path_to_discriminator / f'd_opt_{self.counter}',
+                self.model.load_opt_weights(self.path / 'opt' / path_to_discriminator / f'd_opt_{self.counter}',
                                                   self.path / 'opt' / path_to_generator / f'g_opt_{self.counter}')
 
     def on_epoch_end(self, epoch, logs=None):

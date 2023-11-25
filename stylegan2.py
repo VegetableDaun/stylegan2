@@ -196,5 +196,8 @@ class StyleGan2(tf.keras.Model):
             data_0 = (tf.zeros(shape=(4, self.resolution, self.resolution, 3)), tf.zeros(shape=(4, num_classes)))
             self.train_step(data_0)
 
+        data = np.load(path_to_weights, allow_pickle=True)[()]
+
+
         self.d_optimizer.set_weights(np.load(d_weights, allow_pickle=True))
         self.g_optimizer.set_weights(np.load(g_weights, allow_pickle=True))
