@@ -7,7 +7,7 @@ from PIL import Image
 import tensorflow as tf
 from tensorflow import keras
 
-from config_GAN import path_to_result, path_to_discriminator, path_to_generator, latent_dim
+from config_GAN import path_to_result, path_to_discriminator, path_to_generator, latent_dim, num_classes
 
 
 class CustomCallback_epoch(keras.callbacks.Callback):
@@ -29,14 +29,16 @@ class CustomCallback_epoch(keras.callbacks.Callback):
 
 
 class CustomCallback_save(keras.callbacks.Callback):
-    def __init__(self, num_save=5, save_last=True, path=path_to_result):
+    def __init__(self, path=path_to_result, num_save=5, save_last=True, gen_images=True):
         super(CustomCallback_save, self).__init__()
         self.num_save = num_save
         self.path = Path(path)
         self.save_last = save_last
+        self.gen_images = gen_images
 
         try:
-            os.makedirs(self.path / 'Image')
+            for i in range(num_classes):
+                os.makedirs(self.path / f'Image/class_{i}')
             os.makedirs(self.path / path_to_discriminator)
             os.makedirs(self.path / path_to_generator)
         except:
@@ -49,8 +51,8 @@ class CustomCallback_save(keras.callbacks.Callback):
                 self.counter = int(json.load(F))
 
         rnd = np.random.RandomState(666)
-        self.noise = rnd.normal(size=(10, latent_dim))
-        self.labels = keras.utils.to_categorical(range(10), 10)
+        self.noise = rnd.normal(size=(num_classes, latent_dim))
+        self.labels = keras.utils.to_categorical(range(num_classes), num_classes)
     def on_train_begin(self, logs=None):
         if os.path.isfile(self.path / 'metrics.json'):
             self.counter -= self.counter % self.num_save
@@ -79,14 +81,15 @@ class CustomCallback_save(keras.callbacks.Callback):
                 self.model.discriminator.save(self.path / path_to_discriminator / f'Discriminator_{self.counter}.npy')
                 self.model.generator.save(self.path / path_to_generator / f'Generator_{self.counter}.npy')
 
-            img = self.model.generator(self.noise, c=self.labels)
-            img = tf.transpose(img, [0, 2, 3, 1])
-            for i in range(np.shape(img)[0]):
-                img_i = np.array(img[i])
-                img_i = np.round(img_i * 255)
-                img_i = img_i.astype(np.uint8)
-                img_i = Image.fromarray(img_i)
-                img_i.save(self.path / ('Image/Epoch_' + f'{self.counter}_{i}.jpg'))
+            if self.gen_images:
+                img = self.model.generator(self.noise, c=self.labels)
+                img = tf.transpose(img, [0, 2, 3, 1])
+                for i in range(tf.shape(img)[0]):
+                    img_i = np.array(img[i])
+                    img_i = np.round(img_i * 255)
+                    img_i = img_i.astype(np.uint8)
+                    img_i = Image.fromarray(img_i)
+                    img_i.save(self.path / f'Image/class_{i}/epoch_{self.counter}.jpg')
 
         with open(self.path / 'data.json', 'w') as F:
             json.dump(self.counter, F)
