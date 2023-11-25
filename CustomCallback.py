@@ -36,7 +36,9 @@ class CustomCallback_save(keras.callbacks.Callback):
         self.save_last = save_last
 
         try:
-            os.makedirs(self.path)
+            os.makedirs(self.path / 'Image')
+            os.makedirs(self.path / path_to_discriminator)
+            os.makedirs(self.path / path_to_generator)
         except:
             pass
 
@@ -69,25 +71,19 @@ class CustomCallback_save(keras.callbacks.Callback):
                 json.dump(feeds, F)
 
         if (epoch + 1) % self.num_save == 0:
-            try:
-                os.makedirs(self.path / 'Image')
-                os.makedirs(self.path / path_to_discriminator)
-                os.makedirs(self.path / path_to_generator)
-            except:
-                pass
 
             if self.save_last:
-                self.model.discriminator.save(self.path / 'Discriminator.hdf5')
-                self.model.generator.save(self.path / 'Generator.hdf5')
+                self.model.discriminator.save(self.path / 'Discriminator.npy')
+                self.model.generator.save(self.path / 'Generator.npy')
             else:
-                self.model.discriminator.save(self.path / path_to_discriminator / f'Discriminator_{self.counter}.hdf5')
-                self.model.generator.save(self.path / path_to_generator / f'Generator_{self.counter}.hdf5')
+                self.model.discriminator.save(self.path / path_to_discriminator / f'Discriminator_{self.counter}.npy')
+                self.model.generator.save(self.path / path_to_generator / f'Generator_{self.counter}.npy')
 
             img = self.model.generator(self.noise, c=self.labels)
             img = tf.transpose(img, [0, 2, 3, 1])
-            img = np.array(img)
             for i in range(np.shape(img)[0]):
-                img_i = np.round(img[i] * 255)
+                img_i = np.array(img[i])
+                img_i = np.round(img_i * 255)
                 img_i = img_i.astype(np.uint8)
                 img_i = Image.fromarray(img_i)
                 img_i.save(self.path / ('Image/Epoch_' + f'{self.counter}_{i}.jpg'))
