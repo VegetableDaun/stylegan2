@@ -12,15 +12,13 @@ from config_GAN import path_to_result, path_to_discriminator, path_to_generator,
 
 class CustomCallback_epoch(keras.callbacks.Callback):
     def on_epoch_begin(self, epoch, logs=None):
-        self.model.epoch += 1
-
-    def on_epoch_end(self, epoch, logs=None):
         opt_cfg = {"learning_rate": 1e-3, "beta_1": 0.0, "beta_2": 0.99, "epsilon": 1e-8}
 
-        if self.model.epoch == self.model.T_e:
+        self.model.epoch += 1
+        
+        if self.model.epoch + 1 == self.model.T_e:
             self.model.d_optimizer = tf.keras.optimizers.legacy.Adam(**opt_cfg)
             self.model.g_optimizer = tf.keras.optimizers.legacy.Adam(**opt_cfg)
-
 
 class CustomCallback_save(keras.callbacks.Callback):
     def __init__(self, path=path_to_result, num_save=5, save_last=True, gen_images=True):
