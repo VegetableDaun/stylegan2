@@ -187,8 +187,12 @@ class StyleGan2(tf.keras.Model):
             self.resolution = 32
 
     def save_opt_weights(self, d_path_to_opt, g_path_to_opt):
-        np.save(d_path_to_opt, self.d_optimizer.get_weights(), allow_pickle=True)
-        np.save(g_path_to_opt, self.g_optimizer.get_weights(), allow_pickle=True)
+
+        d_data = self.d_optimizer.get_weights()
+        g_data = self.g_optimizer.get_weights()
+
+        np.save(d_path_to_opt, d_data, allow_pickle=True)
+        np.save(g_path_to_opt, g_data, allow_pickle=True)
 
     def load_opt_weights(self, d_weights, g_weights):
 
@@ -196,8 +200,8 @@ class StyleGan2(tf.keras.Model):
             data_0 = (tf.zeros(shape=(4, self.resolution, self.resolution, 3)), tf.zeros(shape=(4, num_classes)))
             self.train_step(data_0)
 
-        # data = np.load(path_to_weights, allow_pickle=True)[()]
+        d_data = np.load(d_weights, allow_pickle=True)[()]
+        g_data = np.load(g_weights, allow_pickle=True)[()]
 
-
-        self.d_optimizer.set_weights(np.load(d_weights, allow_pickle=True))
-        self.g_optimizer.set_weights(np.load(g_weights, allow_pickle=True))
+        self.d_optimizer.set_weights(d_data)
+        self.g_optimizer.set_weights(g_data)
