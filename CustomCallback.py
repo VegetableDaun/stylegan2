@@ -17,16 +17,9 @@ class CustomCallback_epoch(keras.callbacks.Callback):
     def on_epoch_end(self, epoch, logs=None):
         opt_cfg = {"learning_rate": 1e-3, "beta_1": 0.0, "beta_2": 0.99, "epsilon": 1e-8}
 
-        self.model.d_optimizer = keras.optimizers.legacy.Adam(**opt_cfg)
-        self.model.g_optimizer = keras.optimizers.legacy.Adam(**opt_cfg)
-
-        if self.model.epoch == 30 or self.model.epoch == 70:
-            self.model.generator.save(f'GEN_{epoch}_new.npy')
-            self.model.discriminator.save(f'DIS_{epoch}_new.npy')
-
-            np.save(f'd_{self.model.epoch}_new.npy', self.model.d_optimizer.get_weights(), allow_pickle=True)
-            np.save(f'g_{self.model.epoch}_new.npy', self.model.g_optimizer.get_weights(), allow_pickle=True)
-
+        if self.model.epoch == self.model.T_e:
+            self.model.d_optimizer = keras.optimizers.legacy.Adam(**opt_cfg)
+            self.model.g_optimizer = keras.optimizers.legacy.Adam(**opt_cfg)
 
 class CustomCallback_save(keras.callbacks.Callback):
     def __init__(self, path=path_to_result, num_save=5, save_last=True, gen_images=True):
@@ -41,6 +34,8 @@ class CustomCallback_save(keras.callbacks.Callback):
                 os.makedirs(self.path / f'Image/class_{i}')
             os.makedirs(self.path / path_to_discriminator)
             os.makedirs(self.path / path_to_generator)
+            os.makedirs(self.path / 'opt' / path_to_discriminator)
+            os.makedirs(self.path / 'opt' / path_to_generator)
         except:
             pass
 
@@ -59,6 +54,9 @@ class CustomCallback_save(keras.callbacks.Callback):
 
             if self.counter == 0:
                 os.remove(self.path / 'metrics.json')
+            else:
+                self.model.load_optimizer_weights(self.path / 'opt' / path_to_discriminator / f'd_opt_{self.counter}',
+                                                  self.path / 'opt' / path_to_generator / f'g_opt_{self.counter}')
 
     def on_epoch_end(self, epoch, logs=None):
         self.counter += 1
@@ -71,6 +69,9 @@ class CustomCallback_save(keras.callbacks.Callback):
                 feeds[str(self.counter)] = logs
             with open(self.path / 'metrics.json', mode='w') as F:
                 json.dump(feeds, F)
+
+        self.model.save_opt_weights(self.path / 'opt' / path_to_discriminator / f'd_opt_{self.counter}',
+                                    self.path / 'opt' / path_to_generator / f'g_opt_{self.counter}')
 
         if (epoch + 1) % self.num_save == 0:
 

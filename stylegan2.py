@@ -186,10 +186,15 @@ class StyleGan2(tf.keras.Model):
         elif weights_name in ['MNIST']:
             self.resolution = 32
 
-    def load_optimizer_weights(self, d_weights, g_weights):
+    def save_opt_weights(self, d_path_to_opt, g_path_to_opt):
+        np.save(d_path_to_opt, self.d_optimizer.get_weights(), allow_pickle=True)
+        np.save(g_path_to_opt, self.g_optimizer.get_weights(), allow_pickle=True)
 
-        data_0 = (tf.zeros(shape=(4, self.resolution, self.resolution, 3)), tf.zeros(shape=(4, num_classes)))
-        self.train_step(data_0)
+    def load_opt_weights(self, d_weights, g_weights):
+
+        if not self.d_optimizer.get_weights():
+            data_0 = (tf.zeros(shape=(4, self.resolution, self.resolution, 3)), tf.zeros(shape=(4, num_classes)))
+            self.train_step(data_0)
 
         self.d_optimizer.set_weights(np.load(d_weights, allow_pickle=True))
         self.g_optimizer.set_weights(np.load(g_weights, allow_pickle=True))
