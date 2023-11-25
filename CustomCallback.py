@@ -3,8 +3,8 @@ import os
 from pathlib import Path
 
 import numpy as np
-from PIL import Image
 import tensorflow as tf
+from PIL import Image
 from tensorflow import keras
 
 from config_GAN import path_to_result, path_to_discriminator, path_to_generator, latent_dim, num_classes
@@ -20,6 +20,7 @@ class CustomCallback_epoch(keras.callbacks.Callback):
         if self.model.epoch == self.model.T_e:
             self.model.d_optimizer = keras.optimizers.legacy.Adam(**opt_cfg)
             self.model.g_optimizer = keras.optimizers.legacy.Adam(**opt_cfg)
+
 
 class CustomCallback_save(keras.callbacks.Callback):
     def __init__(self, path=path_to_result, num_save=5, save_last=True, gen_images=True):
@@ -41,16 +42,17 @@ class CustomCallback_save(keras.callbacks.Callback):
 
         if not os.path.isfile(self.path / 'data.json'):
             self.counter = 0
-            self.model.epoch = 0
         else:
             with open(self.path / 'data.json', 'r') as F:
                 self.counter = int(json.load(F))
-                self.model.epoch = self.counter
 
         rnd = np.random.RandomState(666)
         self.noise = rnd.normal(size=(num_classes, latent_dim))
         self.labels = keras.utils.to_categorical(range(num_classes), num_classes)
+
     def on_train_begin(self, logs=None):
+        self.model.epoch = self.counter
+
         if os.path.isfile(self.path / 'metrics.json'):
             self.counter -= self.counter % self.num_save
 
