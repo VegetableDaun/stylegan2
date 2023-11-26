@@ -191,7 +191,9 @@ class StyleGan2Discriminator(tf.keras.layers.Layer):
         None.
 
         """
-        _ = self(tf.zeros(shape=(4, 3, self.resolution, self.resolution)), tf.zeros(shape=(4, num_classes)))
+        
+        if not self.trainable_weights:
+            _ = self(tf.zeros(shape=(4, 3, self.resolution, self.resolution)), tf.zeros(shape=(4, num_classes)))
 
         data = np.load(path_to_weights, allow_pickle=True)[()]
 

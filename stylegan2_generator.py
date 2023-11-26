@@ -273,7 +273,9 @@ class StyleGan2Generator(tf.keras.layers.Layer):
         None.
 
         """
-        _ = self(tf.zeros(shape=(1, 128)), lambda_t=1, c=tf.zeros(shape=(1, num_classes)))
+
+        if not self.mapping_network.trainable_weights or not self.synthesis_network.trainable_weights:
+            _ = self(tf.zeros(shape=(1, 128)), lambda_t=1, c=tf.zeros(shape=(1, num_classes)))
 
         data = np.load(path_to_weights, allow_pickle=True)[()]
 
