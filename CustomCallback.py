@@ -28,8 +28,21 @@ class CustomCallback_epoch(keras.callbacks.Callback):
             print(f'{self.model}')
             print()
 
+            if self.model.d_optimizer == self.model.d_optimizer_new:
+                print(True)
+            else:
+                print(False)
+
+            print()
             self.model.d_optimizer = self.model.d_optimizer_new
             self.model.g_optimizer = self.model.g_optimizer_new
+            print()
+
+            if self.model.d_optimizer == self.model.d_optimizer_new:
+                print(True)
+            else:
+                print(False)
+
 
 
 class CustomCallback_save(keras.callbacks.Callback):
