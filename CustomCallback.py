@@ -28,25 +28,9 @@ class CustomCallback_epoch(keras.callbacks.Callback):
             print(f'{self.model}')
             print()
 
-            print(f'{dir(self.model)}')
+            self.model.d_optimizer = self.model.d_optimizer_new
+            self.model.g_optimizer = self.model.g_optimizer_new
 
-            new_d = tf.keras.optimizers.Adam(**self.opt_cfg)
-            new_g = tf.keras.optimizers.Adam(**self.opt_cfg)
-            new_T_s = self.model.T_s
-            new_T_e = self.model.T_e
-            new_epoch = self.model.epoch
-
-            print('new_d', 'new_g', 'new_T_s', 'new_T_e', 'new_epoch')
-            print()
-            print(new_d, new_g, new_T_s, new_T_e, new_epoch)
-
-            self.model.compile(
-                d_optimizer= new_d,
-                g_optimizer=new_g,
-                T_s=new_T_s,
-                T_e=new_T_e,
-                epoch=new_epoch
-            )
 
 class CustomCallback_save(keras.callbacks.Callback):
     def __init__(self, path=path_to_result, num_save=5, save_last=True, gen_images=True):
