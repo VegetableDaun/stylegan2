@@ -79,6 +79,9 @@ class StyleGan2(tf.keras.Model):
         self.d_loss_metric = keras.metrics.Mean(name="d_loss")
         self.g_loss_metric = keras.metrics.Mean(name="g_loss")
 
+        self.d_optimizer_new = d_optimizer
+        self.g_optimizer_new = g_optimizer
+
         super().compile(*args, **kwargs)
 
     @property
@@ -205,3 +208,5 @@ class StyleGan2(tf.keras.Model):
 
         self.d_optimizer.set_weights(d_data)
         self.g_optimizer.set_weights(g_data)
+
+        print("Loaded opt weights!")
