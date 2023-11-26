@@ -20,7 +20,7 @@ class CustomCallback_epoch(keras.callbacks.Callback):
         print()
         self.model.epoch += 1
 
-        if self.model.epoch == self.model.T_e:
+        if self.model.epoch == self.model.T_e + 1:
             # self.model.d_optimizer = tf.keras.optimizers.legacy.Adam(**self.opt_cfg)
             # self.model.g_optimizer = tf.keras.optimizers.legacy.Adam(**self.opt_cfg)
 
