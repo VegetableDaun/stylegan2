@@ -24,9 +24,12 @@ class CustomCallback_epoch(keras.callbacks.Callback):
             # self.model.d_optimizer = tf.keras.optimizers.legacy.Adam(**self.opt_cfg)
             # self.model.g_optimizer = tf.keras.optimizers.legacy.Adam(**self.opt_cfg)
 
+            print()
+            print(f'{self.model}')
+            print()
             self.model.compile(
-                d_optimizer=keras.optimizers.Adam(**self.opt_cfg),
-                g_optimizer=keras.optimizers.Adam(**self.opt_cfg),
+                d_optimizer=tf.keras.optimizers.Adam(**self.opt_cfg),
+                g_optimizer=tf.keras.optimizers.Adam(**self.opt_cfg),
                 T_s=self.model.T_s,
                 T_e=self.model.T_e,
                 epoch=self.model.epoch
