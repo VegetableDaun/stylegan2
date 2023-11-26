@@ -11,14 +11,16 @@ from config_GAN import path_to_result, path_to_discriminator, path_to_generator,
 
 
 class CustomCallback_epoch(keras.callbacks.Callback):
-    def on_epoch_begin(self, epoch, logs=None):
-        opt_cfg = {"learning_rate": 1e-3, "beta_1": 0.0, "beta_2": 0.99, "epsilon": 1e-8}
+    def __init__(self):
+        self.opt_cfg = {"learning_rate": 1e-3, "beta_1": 0.0, "beta_2": 0.99, "epsilon": 1e-8}
 
+    def on_epoch_begin(self, epoch, logs=None):
         self.model.epoch += 1
-        
-        if self.model.epoch + 1 == self.model.T_e:
-            self.model.d_optimizer = tf.keras.optimizers.legacy.Adam(**opt_cfg)
-            self.model.g_optimizer = tf.keras.optimizers.legacy.Adam(**opt_cfg)
+
+        if self.model.epoch == self.model.T_e + 1:
+            self.model.d_optimizer = tf.keras.optimizers.legacy.Adam(**self.opt_cfg)
+            self.model.g_optimizer = tf.keras.optimizers.legacy.Adam(**self.opt_cfg)
+
 
 class CustomCallback_save(keras.callbacks.Callback):
     def __init__(self, path=path_to_result, num_save=5, save_last=True, gen_images=True):
@@ -43,6 +45,7 @@ class CustomCallback_save(keras.callbacks.Callback):
         else:
             with open(self.path / 'data.json', 'r') as F:
                 self.counter = int(json.load(F))
+                self.counter -= self.counter % self.num_save
 
         rnd = np.random.RandomState(666)
         self.noise = rnd.normal(size=(num_classes, latent_dim))
@@ -51,14 +54,18 @@ class CustomCallback_save(keras.callbacks.Callback):
     def on_train_begin(self, logs=None):
         self.model.epoch = self.counter
 
-        if os.path.isfile(self.path / 'metrics.json'):
-            self.counter -= self.counter % self.num_save
+        if os.path.isfile(self.path / 'metrics.json') and self.counter == 0:
+            os.remove(self.path / 'metrics.json')
+        elif self.counter != 0:
+            self.model.load_opt_weights(self.path / 'opt' / path_to_discriminator / f'd_opt_{self.counter}.npy',
+                                        self.path / 'opt' / path_to_generator / f'g_opt_{self.counter}.npy')
 
-            if self.counter == 0:
-                os.remove(self.path / 'metrics.json')
+            if self.save_last:
+                self.model.discriminator.load(self.path / 'Discriminator.npy')
+                self.model.generator.load(self.path / 'Generator.npy')
             else:
-                self.model.load_opt_weights(self.path / 'opt' / path_to_discriminator / f'd_opt_{self.counter}.npy',
-                                                  self.path / 'opt' / path_to_generator / f'g_opt_{self.counter}.npy')
+                self.model.discriminator.load(self.path / path_to_discriminator / f'Discriminator_{self.counter}.npy')
+                self.model.generator.load(self.path / path_to_generator / f'Generator_{self.counter}.npy')
 
     def on_epoch_end(self, epoch, logs=None):
         self.counter += 1
