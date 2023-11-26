@@ -29,12 +29,23 @@ class CustomCallback_epoch(keras.callbacks.Callback):
             print()
 
             print(f'{dir(self.model)}')
+
+            new_d = tf.keras.optimizers.Adam(**self.opt_cfg)
+            new_g = tf.keras.optimizers.Adam(**self.opt_cfg)
+            new_T_s = self.model.T_s
+            new_T_e = self.model.T_e
+            new_epoch = self.model.epoch
+
+            print('new_d', 'new_g', 'new_T_s', 'new_T_e', 'new_epoch')
+            print()
+            print(new_d, new_g, new_T_s, new_T_e, new_epoch)
+
             self.model.compile(
-                d_optimizer=tf.keras.optimizers.Adam(**self.opt_cfg),
-                g_optimizer=tf.keras.optimizers.Adam(**self.opt_cfg),
-                T_s=self.model.T_s,
-                T_e=self.model.T_e,
-                epoch=self.model.epoch
+                d_optimizer= new_d,
+                g_optimizer=new_g,
+                T_s=new_T_s,
+                T_e=new_T_e,
+                epoch=new_epoch
             )
 
 class CustomCallback_save(keras.callbacks.Callback):
