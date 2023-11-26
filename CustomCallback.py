@@ -24,22 +24,17 @@ class CustomCallback_epoch(keras.callbacks.Callback):
             # self.model.d_optimizer = tf.keras.optimizers.legacy.Adam(**self.opt_cfg)
             # self.model.g_optimizer = tf.keras.optimizers.legacy.Adam(**self.opt_cfg)
 
-            print()
-            print(f'{self.model}')
-            print()
-
             if self.model.d_optimizer == self.model.d_optimizer_new:
                 print(True)
             else:
                 print(False)
 
-            print()
             self.model.d_optimizer = self.model.d_optimizer_new
             self.model.g_optimizer = self.model.g_optimizer_new
-            print()
 
             if self.model.d_optimizer == self.model.d_optimizer_new:
                 print(True)
+                print(elf.model.d_optimizer.get_weights())
             else:
                 print(False)
 
