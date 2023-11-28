@@ -67,12 +67,11 @@ class StyleGan2(tf.keras.Model):
     def metrics(self):
         return [self.d_loss_metric, self.g_loss_metric]
 
-    def compile(self, opt_cfg, T_s, T_e, epoch=0, *args, **kwargs):
+    def compile(self, d_optimizer, g_optimizer, T_s, T_e, epoch=0, *args, **kwargs):
         self.loss_weights = kwargs.pop("loss_weights", self.loss_weights)
-        self.opt_cfg = opt_cfg
 
-        self.d_optimizer = keras.optimizers.Adam(**self.opt_cfg)
-        self.g_optimizer = keras.optimizers.Adam(**self.opt_cfg)
+        self.d_optimizer = d_optimizer
+        self.g_optimizer = g_optimizer
 
         self.T_s = T_s
         self.T_e = T_e
@@ -80,9 +79,6 @@ class StyleGan2(tf.keras.Model):
 
         self.d_loss_metric = keras.metrics.Mean(name="d_loss")
         self.g_loss_metric = keras.metrics.Mean(name="g_loss")
-
-        self.d_optimizer_new = keras.optimizers.Adam(**self.opt_cfg)
-        self.g_optimizer_new = keras.optimizers.Adam(**self.opt_cfg)
 
         super().compile(*args, **kwargs)
 

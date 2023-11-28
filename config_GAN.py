@@ -1,8 +1,8 @@
 # Path to data
-path_to_data = 'chest-xray-pneumonia/chest_xray'
+path_to_data = '/content/drive/Othercomputers/Ноутбук/DIPLOMA/DIP/chest-xray-pneumonia/chest_xray'
 
 # Path to duplicated data
-path_to_duplicate = 'duplicate.json'
+path_to_duplicate = '/content/drive/Othercomputers/Ноутбук/DIPLOMA/DIP/duplicate.json'
 
 # Path to the saved model
 path_to_discriminator = 'Models/Discriminator'
@@ -12,8 +12,8 @@ path_to_generator = 'Models/Generator'
 path_to_result = 'train_models/STYLEGAN2'
 
 # Count for test and valid
-count_test = 1164
-count_valid = 1164
+count_test = 0
+count_valid = 0
 
 # Add_labels is parameter for generator function that shows how count of images needs to increase.
 # If your add_labels looks like {0: 0, 1: 1, 2: 2}
