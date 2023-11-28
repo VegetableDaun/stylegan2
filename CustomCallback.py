@@ -15,29 +15,11 @@ class CustomCallback_epoch(keras.callbacks.Callback):
         self.opt_cfg = {"learning_rate": 1e-3, "beta_1": 0.0, "beta_2": 0.99, "epsilon": 1e-8}
 
     def on_epoch_begin(self, epoch, logs=None):
-        print('on_epcoh_begin')
-        print(self.model.epoch)
-        print()
         self.model.epoch += 1
 
         if self.model.epoch == self.model.T_e + 1:
-            # self.model.d_optimizer = tf.keras.optimizers.legacy.Adam(**self.opt_cfg)
-            # self.model.g_optimizer = tf.keras.optimizers.legacy.Adam(**self.opt_cfg)
-
-            if self.model.d_optimizer == self.model.d_optimizer_new:
-                print(True)
-            else:
-                print(False)
-
-            self.model.d_optimizer = self.model.d_optimizer_new
-            self.model.g_optimizer = self.model.g_optimizer_new
-
-            if self.model.d_optimizer == self.model.d_optimizer_new:
-                print(True)
-                print(elf.model.d_optimizer.get_weights())
-            else:
-                print(False)
-
+            self.model.d_optimizer = tf.keras.optimizers.legacy.Adam(**self.opt_cfg)
+            self.model.g_optimizer = tf.keras.optimizers.legacy.Adam(**self.opt_cfg)
 
 
 class CustomCallback_save(keras.callbacks.Callback):
@@ -75,7 +57,6 @@ class CustomCallback_save(keras.callbacks.Callback):
         print('on_train_begin')
         print(self.model.epoch)
         print()
-
 
         if os.path.isfile(self.path / 'metrics.json') and self.counter == 0:
             os.remove(self.path / 'metrics.json')

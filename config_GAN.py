@@ -1,8 +1,8 @@
 # Path to data
-path_to_data = 'chest-xray-pneumonia/chest_xray'
+path_to_data = '/content/drive/Othercomputers/Ноутбук/DIPLOMA/DIP/chest-xray-pneumonia/chest_xray'
 
 # Path to duplicated data
-path_to_duplicate = 'duplicate.json'
+path_to_duplicate = '/content/drive/Othercomputers/Ноутбук/DIPLOMA/DIP/duplicate.json'
 
 # Path to the saved model
 path_to_discriminator = 'Models/Discriminator'
