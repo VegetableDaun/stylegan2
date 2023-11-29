@@ -8,6 +8,7 @@ from PIL import Image
 from tensorflow import keras
 
 from config_GAN import path_to_result, path_to_discriminator, path_to_generator, latent_dim, num_classes
+from stylegan2 import StyleGan2
 
 
 class CustomCallback_epoch(keras.callbacks.Callback):
@@ -18,8 +19,19 @@ class CustomCallback_epoch(keras.callbacks.Callback):
         self.model.epoch += 1
 
         if self.model.epoch == self.model.T_e + 1:
-            self.model.d_optimizer = tf.keras.optimizers.legacy.Adam(**self.opt_cfg)
-            self.model.g_optimizer = tf.keras.optimizers.legacy.Adam(**self.opt_cfg)
+            new_STYLEGAN2 = StyleGan2(resolution=self.model.resolution, impl=self.model.impl, gpu=self.model.gpu)
+            # self.model.g_optimizer = tf.keras.optimizers.legacy.Adam(**self.opt_cfg)
+            # self.model.d_optimizer = tf.keras.optimizers.legacy.Adam(**self.opt_cfg)
+
+            new_STYLEGAN2.compile(
+                d_optimizer=keras.optimizers.Adam(self.opt_cfg),
+                g_optimizer=keras.optimizers.Adam(self.opt_cfg),
+                T_s=self.model.T_s,
+                T_e=self.model.T_e,
+                epoch=self.model.epoch
+            )
+
+            self.model = new_STYLEGAN2
 
 
 class CustomCallback_save(keras.callbacks.Callback):
