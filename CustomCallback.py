@@ -10,16 +10,16 @@ from tensorflow import keras
 from config_GAN import path_to_result, path_to_discriminator, path_to_generator, latent_dim, num_classes
 from stylegan2 import StyleGan2
 
-
 class CustomCallback_epoch(keras.callbacks.Callback):
     def __init__(self):
         self.opt_cfg = {"learning_rate": 1e-3, "beta_1": 0.0, "beta_2": 0.99, "epsilon": 1e-8}
 
     def on_epoch_begin(self, epoch, logs=None):
         self.model.epoch += 1
+        print(self.model.epoch)
 
         if self.model.epoch == self.model.T_e + 1:
-            new_STYLEGAN2 = StyleGan2(resolution=self.model.resolution, impl=self.model.impl, gpu=self.model.gpu)
+            new_STYLEGAN2 = StyleGan2(resolution=self.model.resolution, impl='cuda', gpu=True)
             # self.model.g_optimizer = tf.keras.optimizers.legacy.Adam(**self.opt_cfg)
             # self.model.d_optimizer = tf.keras.optimizers.legacy.Adam(**self.opt_cfg)
 
