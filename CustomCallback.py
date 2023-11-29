@@ -25,15 +25,14 @@ class CustomCallback_epoch(keras.callbacks.Callback):
 
             new_STYLEGAN2.generator = self.model.generator
             new_STYLEGAN2.discriminator = self.model.discriminator
-            
+
             new_STYLEGAN2.compile(
-                d_optimizer=keras.optimizers.Adam(self.opt_cfg),
-                g_optimizer=keras.optimizers.Adam(self.opt_cfg),
+                d_optimizer=keras.optimizers.Adam(**self.opt_cfg),
+                g_optimizer=keras.optimizers.Adam(**self.opt_cfg),
                 T_s=self.model.T_s,
                 T_e=self.model.T_e,
                 epoch=self.model.epoch
             )
-
 
             self.model = new_STYLEGAN2
 
