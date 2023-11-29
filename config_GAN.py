@@ -9,7 +9,7 @@ path_to_discriminator = 'Models/Discriminator'
 path_to_generator = 'Models/Generator'
 
 # Path to save metrics and image during train
-path_to_result = 'train_models/STYLEGAN2'
+path_to_result = '/content/drive/Othercomputers/Ноутбук/result'
 
 # Count for test and valid
 count_test = 0
@@ -26,6 +26,3 @@ num_channels = 3
 num_classes = 10
 image_size = 32
 latent_dim = 128
-
-generator_in_channels = latent_dim + num_classes
-discriminator_in_channels = num_channels + num_classes
