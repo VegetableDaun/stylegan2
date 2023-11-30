@@ -67,7 +67,7 @@ class StyleGan2(tf.keras.Model):
     def metrics(self):
         return [self.d_loss_metric, self.g_loss_metric]
 
-    def compile(self, d_optimizer, g_optimizer, T_s, T_e, epoch=0, *args, **kwargs):
+    def compile(self, d_optimizer, g_optimizer, T_s, T_e, counter=0, *args, **kwargs):
         self.loss_weights = kwargs.pop("loss_weights", self.loss_weights)
 
         self.d_optimizer = d_optimizer
@@ -75,7 +75,7 @@ class StyleGan2(tf.keras.Model):
 
         self.T_s = T_s
         self.T_e = T_e
-        self.epoch = epoch
+        self.counter = counter
 
         self.d_loss_metric = keras.metrics.Mean(name="d_loss")
         self.g_loss_metric = keras.metrics.Mean(name="g_loss")
@@ -84,7 +84,7 @@ class StyleGan2(tf.keras.Model):
 
     @property
     def lambda_t(self):
-        return min([max([(self.epoch - self.T_s) / (self.T_e - self.T_s), 0]), 1])
+        return min([max([(self.counter - self.T_s) / (self.T_e - self.T_s), 0]), 1])
 
     @staticmethod
     def wasserstein_loss(y_true, y_pred):
