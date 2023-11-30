@@ -59,26 +59,26 @@ class CustomCallback(keras.callbacks.Callback):
                 self.model.discriminator.load(self.path / path_to_discriminator / f'Discriminator_{self.counter}.npy')
                 self.model.generator.load(self.path / path_to_generator / f'Generator_{self.counter}.npy')
 
-    def on_epoch_begin(self, epoch, logs=None):
-        print(self.model.counter, self.counter, self.model.T_e)
-
-        if self.model.counter == self.model.T_e:
-            new_STYLEGAN2 = StyleGan2(resolution=self.model.resolution, impl='cuda', gpu=True)
-            # self.model.g_optimizer = tf.keras.optimizers.legacy.Adam(**self.opt_cfg)
-            # self.model.d_optimizer = tf.keras.optimizers.legacy.Adam(**self.opt_cfg)
-
-            new_STYLEGAN2.generator = self.model.generator
-            new_STYLEGAN2.discriminator = self.model.discriminator
-
-            new_STYLEGAN2.compile(
-                d_optimizer=keras.optimizers.Adam(**self.opt_cfg),
-                g_optimizer=keras.optimizers.Adam(**self.opt_cfg),
-                T_s=self.model.T_s,
-                T_e=self.model.T_e,
-                counter=self.counter
-            )
-
-            self.model = new_STYLEGAN2
+    # def on_epoch_begin(self, epoch, logs=None):
+    #     print(self.model.counter, self.counter, self.model.T_e)
+    #
+    #     if self.model.counter == self.model.T_e:
+    #         new_STYLEGAN2 = StyleGan2(resolution=self.model.resolution, impl='cuda', gpu=True)
+    #         # self.model.g_optimizer = tf.keras.optimizers.legacy.Adam(**self.opt_cfg)
+    #         # self.model.d_optimizer = tf.keras.optimizers.legacy.Adam(**self.opt_cfg)
+    #
+    #         new_STYLEGAN2.generator = self.model.generator
+    #         new_STYLEGAN2.discriminator = self.model.discriminator
+    #
+    #         new_STYLEGAN2.compile(
+    #             d_optimizer=keras.optimizers.Adam(**self.opt_cfg),
+    #             g_optimizer=keras.optimizers.Adam(**self.opt_cfg),
+    #             T_s=self.model.T_s,
+    #             T_e=self.model.T_e,
+    #             counter=self.counter
+    #         )
+    #
+    #         self.model = new_STYLEGAN2
 
     def on_epoch_end(self, epoch, logs=None):
         self.counter += 1
