@@ -16,7 +16,7 @@ class CustomCallback_epoch(keras.callbacks.Callback):
 
     def on_epoch_begin(self, epoch, logs=None):
         self.model.epoch += 1
-        print(self.model.epoch)
+        print(self.model.epoch, self.model.T_e + 1)
 
         if self.model.epoch == self.model.T_e + 1:
             new_STYLEGAN2 = StyleGan2(resolution=self.model.resolution, impl='cuda', gpu=True)
