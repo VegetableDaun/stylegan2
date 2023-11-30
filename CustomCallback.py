@@ -62,7 +62,7 @@ class CustomCallback(keras.callbacks.Callback):
     def on_epoch_begin(self, epoch, logs=None):
         print(self.model.counter, self.counter, self.model.T_e)
 
-        if self.model.epoch == self.model.T_e:
+        if self.model.counter == self.model.T_e:
             new_STYLEGAN2 = StyleGan2(resolution=self.model.resolution, impl='cuda', gpu=True)
             # self.model.g_optimizer = tf.keras.optimizers.legacy.Adam(**self.opt_cfg)
             # self.model.d_optimizer = tf.keras.optimizers.legacy.Adam(**self.opt_cfg)
