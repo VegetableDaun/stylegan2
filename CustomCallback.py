@@ -8,7 +8,6 @@ from PIL import Image
 from tensorflow import keras
 
 from config_GAN import path_to_result, path_to_discriminator, path_to_generator, latent_dim, num_classes
-from stylegan2 import StyleGan2
 
 
 class CustomCallback(keras.callbacks.Callback):
@@ -59,8 +58,13 @@ class CustomCallback(keras.callbacks.Callback):
                 self.model.discriminator.load(self.path / path_to_discriminator / f'Discriminator_{self.counter}.npy')
                 self.model.generator.load(self.path / path_to_generator / f'Generator_{self.counter}.npy')
 
-    # def on_epoch_begin(self, epoch, logs=None):
-    #     print(self.model.counter, self.counter, self.model.T_e)
+    def on_epoch_begin(self, epoch, logs=None):
+        if self.model.counter == self.model.T_e:
+            self.model.g_optimizer.learning_rate *= 10
+            # self.model.d_optimizer.learning_rate *= 3
+
+            # print(self.model.counter, self.counter, self.model.T_e)
+
     #
     #     if self.model.counter == self.model.T_e:
     #         new_STYLEGAN2 = StyleGan2(resolution=self.model.resolution, impl='cuda', gpu=True)
