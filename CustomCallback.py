@@ -58,14 +58,14 @@ class CustomCallback(keras.callbacks.Callback):
                 self.model.discriminator.load(self.path / path_to_discriminator / f'Discriminator_{self.counter}.npy')
                 self.model.generator.load(self.path / path_to_generator / f'Generator_{self.counter}.npy')
 
-    def on_epoch_begin(self, epoch, logs=None):
-        if self.model.counter == self.model.T_s:
-            self.model.d_optimizer.learning_rate = self.model.d_optimizer.learning_rate * 5
-            # var.assign(var * value)
-            # self.model.d_optimizer.learning_rate = self.model.d_optimizer.learning_rate * 5
-
-        if self.model.counter == self.model.T_e:
-            self.model.d_optimizer.learning_rate = self.model.d_optimizer.learning_rate / 5
+    # def on_epoch_begin(self, epoch, logs=None):
+    #     if self.model.counter == self.model.T_s:
+    #         self.model.d_optimizer.learning_rate = self.model.d_optimizer.learning_rate * 5
+    #         # var.assign(var * value)
+    #         # self.model.d_optimizer.learning_rate = self.model.d_optimizer.learning_rate * 5
+    #
+    #     if self.model.counter == self.model.T_e:
+    #         self.model.d_optimizer.learning_rate = self.model.d_optimizer.learning_rate / 5
             # var.assign(var * value)
             # self.model.d_optimizer.learning_rate = self.model.d_optimizer.learning_rate / 5
 
