@@ -59,10 +59,15 @@ class CustomCallback(keras.callbacks.Callback):
                 self.model.generator.load(self.path / path_to_generator / f'Generator_{self.counter}.npy')
 
     def on_epoch_begin(self, epoch, logs=None):
-        if self.model.counter == self.model.T_e:
-            self.model.g_optimizer.learning_rate = self.model.g_optimizer.learning_rate * 5
+        if self.model.counter == self.model.T_s:
+            self.model.g_optimizer.learning_rate = self.model.g_optimizer.learning_rate * 2
             # var.assign(var * value)
-            self.model.d_optimizer.learning_rate = self.model.d_optimizer.learning_rate * 5
+            self.model.d_optimizer.learning_rate = self.model.d_optimizer.learning_rate * 2
+
+        if self.model.counter == self.model.T_e:
+            self.model.g_optimizer.learning_rate = self.model.g_optimizer.learning_rate / 2
+            # var.assign(var * value)
+            self.model.d_optimizer.learning_rate = self.model.d_optimizer.learning_rate / 2
 
             # print(self.model.counter, self.counter, self.model.T_e)
 
