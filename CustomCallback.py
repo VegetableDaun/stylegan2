@@ -62,12 +62,12 @@ class CustomCallback(keras.callbacks.Callback):
         if self.model.counter == self.model.T_s:
             self.model.g_optimizer.learning_rate = self.model.g_optimizer.learning_rate * 5
             # var.assign(var * value)
-            self.model.d_optimizer.learning_rate = self.model.d_optimizer.learning_rate * 5
+            # self.model.d_optimizer.learning_rate = self.model.d_optimizer.learning_rate * 5
 
         if self.model.counter == self.model.T_e:
             self.model.g_optimizer.learning_rate = self.model.g_optimizer.learning_rate / 5
             # var.assign(var * value)
-            self.model.d_optimizer.learning_rate = self.model.d_optimizer.learning_rate / 5
+            # self.model.d_optimizer.learning_rate = self.model.d_optimizer.learning_rate / 5
 
             # print(self.model.counter, self.counter, self.model.T_e)
 
