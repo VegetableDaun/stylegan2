@@ -60,7 +60,7 @@ class CustomCallback(keras.callbacks.Callback):
 
     def on_epoch_begin(self, epoch, logs=None):
         if self.model.counter == self.model.T_e:
-            self.model.g_optimizer.learning_rate = self.model.g_optimizer.learning_rate * 10
+            self.model.g_optimizer.learning_rate = self.model.g_optimizer.learning_rate / 10
             # var.assign(var * value)
             # self.model.d_optimizer.learning_rate *= 3
 
