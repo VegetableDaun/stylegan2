@@ -23,5 +23,6 @@ add_labels = {0: 0, 1: 0, 2: 0}
 # Setting for GAN models
 batch_size = 64
 num_classes = 3
+num_channels = 3
 image_size = 256
 latent_dim = 128
