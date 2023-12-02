@@ -25,7 +25,7 @@ class ModulatedConv2DLayer(tf.keras.layers.Layer):
         self.use_wscale = use_wscale
         self.lrmul = lrmul
         self.fused_modconv = fused_modconv
-        self.latent_size = 512
+        self.latent_size = 256
         self.impl = impl
         self.gpu = gpu
         

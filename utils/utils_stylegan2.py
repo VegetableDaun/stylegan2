@@ -17,5 +17,5 @@ def get_weight_initializer_runtime_coef(shape, gain=1, use_wscale=True, lrmul=1)
     return init_std, runtime_coef
 
 
-def nf(stage, fmap_base=4 << 10, fmap_decay=1.0, fmap_min=1, fmap_max=512):
+def nf(stage, fmap_base=2 << 10, fmap_decay=1.0, fmap_min=1, fmap_max=256):
     return np.clip(int(fmap_base / (2.0 ** (stage * fmap_decay))), fmap_min, fmap_max)
