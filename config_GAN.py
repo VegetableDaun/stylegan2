@@ -25,4 +25,4 @@ batch_size = 64
 num_classes = 3
 num_channels = 3
 image_size = 256
-latent_dim = 128
+latent_dim = 512

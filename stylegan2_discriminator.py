@@ -63,9 +63,9 @@ class StyleGan2Discriminator(tf.keras.layers.Layer):
         # last layers
         self.conv_4_4 = Conv2DLayer(fmaps=nf(1), kernel=3, impl=self.impl,
                                     gpu=self.gpu, name='4x4/Conv')
-        self.conv_4_4_bias = self.add_weight(name='4x4/Conv/bias', shape=(128,),
+        self.conv_4_4_bias = self.add_weight(name='4x4/Conv/bias', shape=(512,),
                                              initializer=tf.random_normal_initializer(0, 1), trainable=True)
-        self.dense_4_4 = DenseLayer(fmaps=128, name='4x4/Dense0')
+        self.dense_4_4 = DenseLayer(fmaps=512, name='4x4/Dense0')
 
         # self.dense_output_c_64 = DenseLayer(fmaps=64, name='Output_c_64')
         # self.dense_output_c_32 = DenseLayer(fmaps=32, name='Output_c_32')
