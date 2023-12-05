@@ -43,7 +43,7 @@ class CustomCallback(keras.callbacks.Callback):
         self.labels = keras.utils.to_categorical(range(num_classes), num_classes)
 
     def on_train_begin(self, logs=None):
-        self.model.counter = 250 #self.counter
+        self.model.counter = self.counter
 
         if os.path.isfile(self.path / 'metrics.json') and self.counter == 0:
             os.remove(self.path / 'metrics.json')
