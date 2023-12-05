@@ -207,7 +207,9 @@ discriminator_weights_32 = ['4x4/Conv/bias',
                             'Output_uc/bias']
 
 synthesis_weights = {'MNIST': synthesis_weights_32,
-                     32: synthesis_weights_32}
+                     32: synthesis_weights_32,
+                     256: synthesis_weights_256}
 
 discriminator_weights = {'MNIST': discriminator_weights_32,
-                         32: discriminator_weights_32}
+                         32: discriminator_weights_32,
+                         32: discriminator_weights_256}
