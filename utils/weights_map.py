@@ -212,4 +212,4 @@ synthesis_weights = {'MNIST': synthesis_weights_32,
 
 discriminator_weights = {'MNIST': discriminator_weights_32,
                          32: discriminator_weights_32,
-                         32: discriminator_weights_256}
+                         256: discriminator_weights_256}
