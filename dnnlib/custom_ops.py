@@ -20,7 +20,7 @@ from tensorflow.python.client import device_lib # pylint: disable=no-name-in-mod
 # Global options.
 
 cuda_cache_path = os.path.join(os.path.dirname(__file__), '_cudacache')
-cuda_cache_version_tag = 'v2'
+cuda_cache_version_tag = 'v3'
 do_not_hash_included_headers = False # Speed up compilation by assuming that headers included by the CUDA code never change. Unsafe!
 verbose = True # Print status messages to stdout.
 
