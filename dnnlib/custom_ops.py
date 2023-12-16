@@ -20,7 +20,7 @@ from tensorflow.python.client import device_lib # pylint: disable=no-name-in-mod
 # Global options.
 
 cuda_cache_path = os.path.join(os.path.dirname(__file__), '_cudacache')
-cuda_cache_version_tag = 'v3'
+cuda_cache_version_tag = 'v2'
 do_not_hash_included_headers = False # Speed up compilation by assuming that headers included by the CUDA code never change. Unsafe!
 verbose = True # Print status messages to stdout.
 
@@ -61,7 +61,7 @@ def _run_cmd(cmd):
         raise RuntimeError('NVCC returned an error. See below for full command line and output log:\n\n%s\n\n%s' % (cmd, output))
 
 def _prepare_nvcc_cli(opts):
-    cmd = 'nvcc --std=c++20 -DNDEBUG ' + opts.strip()
+    cmd = 'nvcc --std=c++17 -DNDEBUG ' + opts.strip()
     cmd += ' --disable-warnings'
     cmd += ' --include-path "%s"' % tf.sysconfig.get_include()
     cmd += ' --include-path "%s"' % os.path.join(tf.sysconfig.get_include(), 'external', 'protobuf_archive', 'src')
